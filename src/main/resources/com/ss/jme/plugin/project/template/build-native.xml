@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="NativeBuildScript" default="buildNativeBundle" basedir="native-build"
+         xmlns:fx="javafx:com.sun.javafx.tools.ant">
+
+    <property environment="env"/>
+
+    <target name="initFXAntTasks">
+        <echo>BaseDir = ${basedir}</echo>
+        <path id="fxant">
+            <filelist>
+                <file name="${java.home}/../lib/ant-javafx.jar"/>
+                <file name="${java.home}/lib/jfxrt.jar"/>
+                <file name="${basedir}"/>
+            </filelist>
+        </path>
+        <taskdef resource="com/sun/javafx/tools/ant/antlib.xml"
+                 uri="javafx:com.sun.javafx.tools.ant"
+                 classpathref="fxant"/>
+    </target>
+
+    <target name="prepareNativeBuild" depends="prepareDependencies, initFXAntTasks" >
+
+        <delete dir="${basedir}/externalLibs"/>
+        <delete dir="${basedir}/project"/>
+        <delete dir="${basedir}/projectRefs"/>
+        <delete dir="${basedir}/deploy"/>
+        <delete dir="${basedir}/dist"/>
+
+        <mkdir dir="${basedir}/externalLibs"/>
+
+        <copy todir="${basedir}/externalLibs">
+            <fileset dir="${basedir}/../build/dependencies" />
+        </copy>
+
+        <mkdir dir="${basedir}/project"/>
+        <copy todir="${basedir}/project">
+            <fileset dir="${basedir}/../src/main/">
+                <include name="java/**"/>
+                <include name="assets/**"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="compileClassesForNativeBuild">
+        <delete dir="${basedir}/build"/>
+        <mkdir dir="${basedir}/build/src"/>
+        <mkdir dir="${basedir}/build/libs"/>
+        <mkdir dir="${basedir}/build/classes"/>
+
+        <!-- Copy project-libs references -->
+        <copy todir="${basedir}/build/libs">
+            <fileset dir="${basedir}/externalLibs"/>
+        </copy>
+
+        <!-- Copy project sources itself -->
+        <copy todir="${basedir}/build/src">
+            <fileset dir="${basedir}/project/java">
+                <include name="**/*"/>
+            </fileset>
+            <fileset dir="${basedir}/project/assets">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+
+        <javac includeantruntime="false" source="${javaSourceVersion}" target="${javaTargetVersion}"
+               srcdir="${basedir}/build/src" destdir="${basedir}/build/classes"
+               encoding="UTF-8">
+            <classpath>
+                <fileset dir="${basedir}/build/libs">
+                    <include name="*"/>
+                </fileset>
+            </classpath>
+        </javac>
+
+        <!-- Copy over none Java-Files -->
+        <copy todir="${basedir}/build/classes">
+            <fileset dir="${basedir}/project/java">
+                <exclude name="**/*.java"/>
+            </fileset>
+            <fileset dir="${basedir}/project/assets">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="buildNativeBundle" depends="prepareNativeBuild, compileClassesForNativeBuild, initFXAntTasks">
+        <delete file="${basedir}/dist"/>
+        <delete file="${basedir}/deploy"/>
+
+        <mkdir dir="${basedir}/dist"/>
+        <mkdir dir="${basedir}/dist/libs"/>
+        <mkdir dir="${basedir}/package"/>
+
+        <copy todir="${basedir}/dist/libs">
+            <fileset dir="${basedir}/externalLibs">
+                <include name="*"/>
+            </fileset>
+        </copy>
+
+        <fx:resources id="appRes" >
+            <fx:fileset dir="${basedir}/dist" includes="${applicationJarName}"/>
+            <fx:fileset dir="${basedir}/dist" includes="libs/*"/>
+            <fx:fileset dir="${basedir}/package"/>
+        </fx:resources>
+
+        <fx:application id="fxApplication"
+                        name="${applicationTitle}"
+                        mainClass="${applicationMainClass}"
+                        toolkit="fx"
+                        version="${applicationVersion}"/>
+
+        <mkdir dir="${basedir}/build/classes/META-INF"/>
+
+        <fx:jar destfile="${basedir}/dist/${applicationJarName}">
+            <fx:application refid="fxApplication"/>
+            <fileset dir="${basedir}/build/classes"/>
+            <fx:resources refid="appRes"/>
+            <manifest>
+                <attribute name="Implementation-Vendor" value="${applicationVendor}"/>
+                <attribute name="Implementation-Title" value="${applicationTitle}"/>
+                <attribute name="Implementation-Version" value="${applicationVersion}"/>
+            </manifest>
+        </fx:jar>
+
+        <mkdir dir="${basedir}/deploy"/>
+        <!-- Need to use ${basedir} because somehow the ant task is calculating the directory differently -->
+        <fx:deploy
+                embedJNLP="false"
+                extension="false"
+                includeDT="false"
+                offlineAllowed="true"
+                outdir="${basedir}/deploy"
+                outfile="${applicationTitle}" nativeBundles="all"
+                updatemode="background" verbose="true">
+
+            <fx:platform>
+                <fx:jvmarg value="-XX:+UseParallelGC"/>
+            </fx:platform>
+
+            <preferences shortcut="true" menu="true" install="false"/>
+            <application refId="fxApplication"/>
+            <resources refid="appRes"/>
+        </fx:deploy>
+    </target>
+</project>

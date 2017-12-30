@@ -1,0 +1,41 @@
+<idea-plugin>
+    <id>com.ss.jme.plugin</id>
+    <name>jMonkeyEngine support</name>
+    <version>1.0.0</version>
+    <vendor email="javasabr@gmail.com" url="https://github.com/JavaSaBr/IntelliJ-jME-Plugin">JavaSaBr</vendor>
+
+    <description><![CDATA[
+      Sample plugin.<br>
+    ]]></description>
+
+    <change-notes><![CDATA[
+      Release 1.0.0: Initial release.<br>
+    ]]>
+    </change-notes>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="162"/>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    -->
+    <depends>org.jetbrains.plugins.gradle</depends>
+
+    <extensions defaultExtensionNs="org.jetbrains.plugins.gradle">
+        <frameworkSupport implementation="com.ss.jme.plugin.framework.support.JmeFrameworkSupportProvider"/>
+    </extensions>
+
+
+    <extensions defaultExtensionNs="com.intellij">
+        <moduleBuilder builderClass="com.ss.jme.plugin.project.wizard.JmeModuleBuilder"/>
+    </extensions>
+
+    <actions>
+        <group id="MyPlugin.SampleMenu" text="Greeting" description="Greeting menu">
+            <add-to-group group-id="MainMenu" anchor="last"/>
+            <!-- <action id="Myplugin.Textboxes" class="HelloAction" text="Hello" description="Says hello"/> -->
+        </group>
+    </actions>
+
+</idea-plugin>
