@@ -1,6 +1,7 @@
 package com.ss.jme.plugin.ui;
 
 import com.intellij.openapi.util.IconLoader;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
@@ -11,5 +12,5 @@ import javax.swing.*;
  */
 public interface JmeIcons {
 
-    Icon JME_ICON = IconLoader.getIcon("/nodes/Module.png"); // 16x16
+    @NotNull Icon JME_16 = IconLoader.getIcon("/com/ss/jme/plugin/ui/icons/jme.png"); // 16x16
 }

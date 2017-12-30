@@ -2,7 +2,7 @@ package com.ss.jme.plugin.framework.support;
 
 import com.intellij.framework.FrameworkTypeEx;
 import com.intellij.framework.addSupport.FrameworkSupportInModuleProvider;
-import com.intellij.icons.AllIcons;
+import com.ss.jme.plugin.ui.JmeIcons;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -33,6 +33,6 @@ public class JmeFrameworkTypeEx extends FrameworkTypeEx {
 
     @Override
     public @NotNull Icon getIcon() {
-        return AllIcons.Nodes.Module;
+        return JmeIcons.JME_16;
     }
 }

@@ -5,7 +5,8 @@
     <vendor email="javasabr@gmail.com" url="https://github.com/JavaSaBr/IntelliJ-jME-Plugin">JavaSaBr</vendor>
 
     <description><![CDATA[
-      Sample plugin.<br>
+      This plugin provides integration with jMonkeyEngine as framework support for gradle projects
+      and integration with jMonkeyBuilder to work with assets.<br>
     ]]></description>
 
     <change-notes><![CDATA[
@@ -26,16 +27,12 @@
         <frameworkSupport implementation="com.ss.jme.plugin.framework.support.JmeFrameworkSupportProvider"/>
     </extensions>
 
-
-    <extensions defaultExtensionNs="com.intellij">
-        <moduleBuilder builderClass="com.ss.jme.plugin.project.wizard.JmeModuleBuilder"/>
-    </extensions>
-
     <actions>
-        <group id="MyPlugin.SampleMenu" text="Greeting" description="Greeting menu">
-            <add-to-group group-id="MainMenu" anchor="last"/>
-            <!-- <action id="Myplugin.Textboxes" class="HelloAction" text="Hello" description="Says hello"/> -->
+        <group id="com.ss.jme.plugin.actions.jme" text="jME" description="jMonkeyEngine actions">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="WeighingNewGroup"/>
+            <action id="com.ss.jme.plugin.action.openInJmb" class="com.ss.jme.plugin.ui.action.OpenInJmbAction"
+                    text="Open in jMB" description="Open the file in jMonkeyBuilder."
+                    icon="/com/ss/jme/plugin/ui/icons/jmb.png" />
         </group>
     </actions>
-
 </idea-plugin>
