@@ -35,7 +35,6 @@ public class JmeFrameworkSupportProvider extends GradleFrameworkSupportProvider 
     private static final String NATIVE_BUILD_SCRIPT;
     @NotNull
     private static final String GAME_APPLICATION;
-
     @NotNull
     private static final String STARTER;
 

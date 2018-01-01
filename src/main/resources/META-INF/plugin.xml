@@ -22,6 +22,7 @@
     <!-- uncomment to enable plugin in all products
     -->
     <depends>org.jetbrains.plugins.gradle</depends>
+    <resource-bundle>messages.jme</resource-bundle>
 
     <extensions defaultExtensionNs="org.jetbrains.plugins.gradle">
         <frameworkSupport implementation="com.ss.jme.plugin.framework.support.JmeFrameworkSupportProvider"/>

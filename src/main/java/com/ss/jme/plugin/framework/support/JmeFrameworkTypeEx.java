@@ -2,6 +2,7 @@ package com.ss.jme.plugin.framework.support;
 
 import com.intellij.framework.FrameworkTypeEx;
 import com.intellij.framework.addSupport.FrameworkSupportInModuleProvider;
+import com.ss.jme.plugin.JmeMessagesBundle;
 import com.ss.jme.plugin.ui.JmeIcons;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,7 +30,7 @@ public class JmeFrameworkTypeEx extends FrameworkTypeEx {
 
     @Override
     public @NotNull String getPresentableName() {
-        return "jMonkeyEngine 3.1 Desktop";
+        return JmeMessagesBundle.message("jme.framework.type.presentableName");
     }
 
     @Override

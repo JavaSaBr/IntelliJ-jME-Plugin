@@ -9,6 +9,7 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.util.ui.JBUI;
+import com.ss.jme.plugin.JmeMessagesBundle;
 import com.ss.jme.plugin.JmePluginComponent;
 import com.ss.jme.plugin.JmePluginState;
 import com.ss.rlib.util.StringUtils;
@@ -63,6 +64,11 @@ public class JmeExternalSettingsPage implements Configurable, Configurable.NoScr
         settingsPanel = null;
     }
 
+    /**
+     * Gets the settings panel.
+     *
+     * @return the settings panel.
+     */
     private @NotNull Optional<JmeConfigurablePanel> getSettingsPanel() {
         return Optional.ofNullable(settingsPanel);
     }
@@ -70,16 +76,24 @@ public class JmeExternalSettingsPage implements Configurable, Configurable.NoScr
     @Nls
     @Override
     public String getDisplayName() {
-        return "jMonkeyEngine";
+        return JmeMessagesBundle.message("jme.settings.displayName");
     }
 
-    public static @NotNull FileChooserDescriptor createSceneBuilderDescriptor() {
+    /**
+     * Creates a file chooser descriptor to select an executable file of jMB.
+     *
+     * @return the file chooser descriptor.
+     */
+    public static @NotNull FileChooserDescriptor createJmbDescriptor() {
         final FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor();
-        descriptor.setTitle("jMonkeyBuilder Configuration");
-        descriptor.setDescription("Select path to jMonkeyBuilder executable");
+        descriptor.setTitle(JmeMessagesBundle.message("jme.settings.pathToJmb.file.chooser.title"));
+        descriptor.setDescription(JmeMessagesBundle.message("jme.settings.pathToJmb.file.chooser.description"));
         return descriptor;
     }
 
+    /**
+     * The UI panel to show settings control.
+     */
     public static class JmeConfigurablePanel {
 
         @NotNull
@@ -92,10 +106,10 @@ public class JmeExternalSettingsPage implements Configurable, Configurable.NoScr
             this.panel = new JBPanel<>(new BorderLayout());
             this.pathField = new TextFieldWithBrowseButton();
 
-            final FileChooserDescriptor descriptor = createSceneBuilderDescriptor();
+            final FileChooserDescriptor descriptor = createJmbDescriptor();
             pathField.addBrowseFolderListener(descriptor.getTitle(), descriptor.getDescription(), null, descriptor);
 
-            final JBLabel label = new JBLabel("Path to jMonkeyBuilder:");
+            final JBLabel label = new JBLabel(JmeMessagesBundle.message("jme.settings.label.pathToJmb"));
             label.setHorizontalAlignment(SwingConstants.LEFT);
 
             final JPanel wrapper = new JBPanel<>(new GridBagLayout());
@@ -122,6 +136,9 @@ public class JmeExternalSettingsPage implements Configurable, Configurable.NoScr
             panel.add(wrapper, BorderLayout.PAGE_START);
         }
 
+        /**
+         * Resets settings.
+         */
         private void reset() {
 
             final String jmbPath = JmePluginComponent.getInstance()
@@ -135,12 +152,20 @@ public class JmeExternalSettingsPage implements Configurable, Configurable.NoScr
             }
         }
 
+        /**
+         * Apply settings.
+         */
         private void apply() {
             final JmePluginComponent component = JmePluginComponent.getInstance();
             final JmePluginState state = component.getState();
             state.setJmbPath(FileUtil.toSystemIndependentName(pathField.getText().trim()));
         }
 
+        /**
+         * Checks modifications of settings.
+         *
+         * @return true if the settings were changed.
+         */
         private boolean isModified() {
 
             final String jmbPath = JmePluginComponent.getInstance()
