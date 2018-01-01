@@ -1,8 +1,10 @@
 package com.ss.jme.plugin.ui.settings;
 
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.Configurable;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.io.FileUtil;
@@ -19,7 +21,12 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The page to provide some settings of integration with jMonkeyEngine.
@@ -27,6 +34,9 @@ import java.util.Optional;
  * @author JavaSaBr
  */
 public class JmeExternalSettingsPage implements Configurable, Configurable.NoScroll {
+
+    @NotNull
+    private static final Logger LOG = Logger.getInstance("#ccom.ss.jme.plugin.ui.settings.JmeExternalSettingsPage");
 
     /**
      * The settings panel.
@@ -156,9 +166,63 @@ public class JmeExternalSettingsPage implements Configurable, Configurable.NoScr
          * Apply settings.
          */
         private void apply() {
+
             final JmePluginComponent component = JmePluginComponent.getInstance();
             final JmePluginState state = component.getState();
-            state.setJmbPath(FileUtil.toSystemIndependentName(pathField.getText().trim()));
+
+            final String jmbPath = FileUtil.toSystemIndependentName(pathField.getText().trim());
+
+            if (StringUtils.isEmpty(jmbPath)) {
+                state.setJmbPath("");
+                return;
+            }
+
+            final Path path = Paths.get(jmbPath);
+            if (!Files.exists(path)) {
+                final String message = JmeMessagesBundle.message("jme.settings.pathToJmb.fileNotExists.message", path.toString());
+                final String title = JmeMessagesBundle.message("jme.settings.pathToJmb.fileNotExists.title");
+                Messages.showWarningDialog(message, title);
+                return;
+            }
+
+            final ProcessBuilder builder = new ProcessBuilder();
+            builder.command(path.toString(), "serverVersionAPI=1");
+
+            final Process process;
+            try {
+                process = builder.start();
+            } catch (final IOException e) {
+                LOG.warn(e);
+                final String message = JmeMessagesBundle.message("jme.settings.pathToJmb.cantExecute.message", path.toString());
+                final String title = JmeMessagesBundle.message("jme.settings.pathToJmb.cantExecute.title");
+                Messages.showWarningDialog(message, title);
+                return;
+            }
+
+            boolean finished = false;
+            try {
+                finished = process.waitFor(2, TimeUnit.SECONDS);
+            } catch (final InterruptedException e) {
+                LOG.warn(e);
+            }
+
+            if (!finished) {
+                final String message = JmeMessagesBundle.message("jme.settings.pathToJmb.doesnotSupport.message", path.toString());
+                final String title = JmeMessagesBundle.message("jme.settings.pathToJmb.doesnotSupport.title");
+                Messages.showWarningDialog(message, title);
+                process.destroy();
+                return;
+            }
+
+            final int code = process.exitValue();
+            if (code != 100) {
+                final String message = JmeMessagesBundle.message("jme.settings.pathToJmb.doesnotSupport.message", path.toString());
+                final String title = JmeMessagesBundle.message("jme.settings.pathToJmb.doesnotSupport.title");
+                Messages.showWarningDialog(message, title);
+                return;
+            }
+
+            state.setJmbPath(jmbPath);
         }
 
         /**
