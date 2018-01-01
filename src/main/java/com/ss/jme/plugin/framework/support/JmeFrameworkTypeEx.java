@@ -8,6 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 
 /**
+ * The class to describe jMonkeyEngine framework in Gradle project creation wizard.
+ *
  * @author JavaSaBr
  */
 public class JmeFrameworkTypeEx extends FrameworkTypeEx {
@@ -24,7 +26,6 @@ public class JmeFrameworkTypeEx extends FrameworkTypeEx {
     public @NotNull FrameworkSupportInModuleProvider createProvider() {
         return provider;
     }
-
 
     @Override
     public @NotNull String getPresentableName() {

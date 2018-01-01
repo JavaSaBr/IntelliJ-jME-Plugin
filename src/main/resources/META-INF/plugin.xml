@@ -27,6 +27,12 @@
         <frameworkSupport implementation="com.ss.jme.plugin.framework.support.JmeFrameworkSupportProvider"/>
     </extensions>
 
+
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationConfigurable id="com.ss.jme.settings.page"
+                instance="com.ss.jme.plugin.ui.settings.JmeExternalSettingsPage" groupId="language"/>
+    </extensions>
+
     <actions>
         <group id="com.ss.jme.plugin.actions.jme" text="jME" description="jMonkeyEngine actions">
             <add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="WeighingNewGroup"/>
@@ -35,4 +41,9 @@
                     icon="/com/ss/jme/plugin/ui/icons/jmb.png" />
         </group>
     </actions>
+    <application-components>
+        <component>
+            <implementation-class>com.ss.jme.plugin.JmePluginComponent</implementation-class>
+        </component>
+    </application-components>
 </idea-plugin>
