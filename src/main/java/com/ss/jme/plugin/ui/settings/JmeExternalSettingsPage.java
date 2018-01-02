@@ -185,8 +185,8 @@ public class JmeExternalSettingsPage implements Configurable, Configurable.NoScr
                 return;
             }
 
-            final ProcessBuilder builder = new ProcessBuilder();
-            builder.command(path.toString(), "serverVersionAPI=1");
+            final ProcessBuilder builder = new ProcessBuilder(path.toString());
+            builder.environment().put("Server.api.version", "1");
 
             final Process process;
             try {

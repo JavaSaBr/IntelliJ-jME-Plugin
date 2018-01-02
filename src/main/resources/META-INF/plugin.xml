@@ -42,9 +42,15 @@
                     icon="/com/ss/jme/plugin/ui/icons/jmb.png" />
         </group>
     </actions>
+
     <application-components>
         <component>
             <implementation-class>com.ss.jme.plugin.JmePluginComponent</implementation-class>
         </component>
     </application-components>
+    <module-components>
+        <component>
+            <implementation-class>com.ss.jme.plugin.JmeModuleComponent</implementation-class>
+        </component>
+    </module-components>
 </idea-plugin>
