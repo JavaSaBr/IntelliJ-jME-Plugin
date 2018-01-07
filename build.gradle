@@ -40,7 +40,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.JavaSaBr:RLib:6.6.0'
+    compile 'com.github.JavaSaBr:RLib:6.7.1'
 }
 
 task wrapper(type: Wrapper) {

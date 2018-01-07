@@ -14,6 +14,7 @@ import com.intellij.util.ui.JBUI;
 import com.ss.jme.plugin.JmeMessagesBundle;
 import com.ss.jme.plugin.JmePluginComponent;
 import com.ss.jme.plugin.JmePluginState;
+import com.ss.jme.plugin.util.JmePluginUtils;
 import com.ss.rlib.util.StringUtils;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -21,12 +22,10 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 /**
  * The page to provide some settings of integration with jMonkeyEngine.
@@ -185,40 +184,7 @@ public class JmeExternalSettingsPage implements Configurable, Configurable.NoScr
                 return;
             }
 
-            final ProcessBuilder builder = new ProcessBuilder(path.toString());
-            builder.environment().put("Server.api.version", "1");
-
-            final Process process;
-            try {
-                process = builder.start();
-            } catch (final IOException e) {
-                LOG.warn(e);
-                final String message = JmeMessagesBundle.message("jme.settings.pathToJmb.cantExecute.message", path.toString());
-                final String title = JmeMessagesBundle.message("jme.settings.pathToJmb.cantExecute.title");
-                Messages.showWarningDialog(message, title);
-                return;
-            }
-
-            boolean finished = false;
-            try {
-                finished = process.waitFor(2, TimeUnit.SECONDS);
-            } catch (final InterruptedException e) {
-                LOG.warn(e);
-            }
-
-            if (!finished) {
-                final String message = JmeMessagesBundle.message("jme.settings.pathToJmb.doesnotSupport.message", path.toString());
-                final String title = JmeMessagesBundle.message("jme.settings.pathToJmb.doesnotSupport.title");
-                Messages.showWarningDialog(message, title);
-                process.destroy();
-                return;
-            }
-
-            final int code = process.exitValue();
-            if (code != 100) {
-                final String message = JmeMessagesBundle.message("jme.settings.pathToJmb.doesnotSupport.message", path.toString());
-                final String title = JmeMessagesBundle.message("jme.settings.pathToJmb.doesnotSupport.title");
-                Messages.showWarningDialog(message, title);
+            if (!JmePluginUtils.checkJmb(path)) {
                 return;
             }
 
