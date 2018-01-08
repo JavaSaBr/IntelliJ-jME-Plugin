@@ -1,6 +1,6 @@
 <idea-plugin>
     <id>com.ss.jme.plugin</id>
-    <name>jMonkeyEngine support</name>
+    <name>jMonkeyEngine Support</name>
     <version>1.0.0</version>
     <vendor email="javasabr@gmail.com" url="https://github.com/JavaSaBr/IntelliJ-jME-Plugin">JavaSaBr</vendor>
 
