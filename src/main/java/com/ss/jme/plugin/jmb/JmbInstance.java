@@ -9,6 +9,7 @@ import com.ss.jme.plugin.jmb.command.client.ClientCommand;
 import com.ss.jme.plugin.jmb.command.server.EmptyServerCommand;
 import com.ss.jme.plugin.util.JmePluginUtils;
 import com.ss.rlib.concurrent.util.ConcurrentUtils;
+import com.ss.rlib.concurrent.util.ThreadUtils;
 import com.ss.rlib.network.NetworkFactory;
 import com.ss.rlib.network.client.ClientNetwork;
 import com.ss.rlib.network.client.server.Server;
@@ -195,8 +196,16 @@ public class JmbInstance extends Thread {
             server.destroy();
         }
 
+        while (true) {
+            try {
+                this.server = clientNetwork.connect(new InetSocketAddress(freePort));
+                break;
+            } catch (final RuntimeException e) {
+                ThreadUtils.sleep(1000);
+            }
+        }
+
         this.process = process;
-        this.server = clientNetwork.connect(new InetSocketAddress(freePort));
         this.wasFailed = false;
         this.ready = true;
 
