@@ -1,11 +1,15 @@
 package com.ss.jme.plugin;
 
+import com.intellij.compiler.server.BuildManagerListener;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleComponent;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.*;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.ss.jme.plugin.jmb.JmbInstance;
 import com.ss.jme.plugin.jmb.command.client.ClientCommand;
+import com.ss.jme.plugin.jmb.command.client.LoadLocalClassesClientCommand;
+import com.ss.jme.plugin.jmb.command.client.LoadLocalLibrariesClientCommand;
 import com.ss.rlib.util.array.Array;
 import com.ss.rlib.util.array.ArrayCollectors;
 import org.jetbrains.annotations.NotNull;
@@ -16,13 +20,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * The module level component of jME Plugin.
  *
  * @author JavaSaBr
  */
-public class JmeModuleComponent implements ModuleComponent {
+public class JmeModuleComponent implements ModuleComponent, BuildManagerListener {
 
     /**
      * The module root manager.
@@ -42,14 +47,35 @@ public class JmeModuleComponent implements ModuleComponent {
     @NotNull
     private final JmbInstance jmbInstance;
 
+    /**
+     * The notification listener.
+     */
+    @NotNull
+    private final JmeExternalSystemTaskNotificationListener notificationListener;
+
     private JmeModuleComponent(@NotNull final Module module) {
         this.module = module;
         this.rootManager = ModuleRootManager.getInstance(module);
         this.jmbInstance = new JmbInstance(module);
+        this.notificationListener = new JmeExternalSystemTaskNotificationListener(module);
     }
 
     @Override
     public void initComponent() {
+        module.getMessageBus().connect()
+                .subscribe(BuildManagerListener.TOPIC, this);
+    }
+
+    @Override
+    public void buildFinished(@NotNull final Project project, @NotNull final UUID sessionId, final boolean isAutomake) {
+        jmbInstance.sendCommandIfRunning(new LoadLocalClassesClientCommand(getCompileOutput()));
+    }
+
+    /**
+     * Notify about the module's project was resolved.
+     */
+    public void onProjectResolved() {
+        jmbInstance.sendCommandIfRunning(new LoadLocalLibrariesClientCommand(getLibraries()));
     }
 
     /**
@@ -85,6 +111,17 @@ public class JmeModuleComponent implements ModuleComponent {
     }
 
     /**
+     * Get an asset folder of this module.
+     *
+     * @return the asset folder of this module.
+     */
+    public @Nullable Path getAssetFolder() {
+        final VirtualFile assetsFolder = findAssetsFolder();
+        if (assetsFolder == null) return null;
+        return Paths.get(assetsFolder.getPath());
+    }
+
+    /**
      * Get the path to compilation output.
      *
      * @return the path to compilation output.
@@ -95,17 +132,6 @@ public class JmeModuleComponent implements ModuleComponent {
         final VirtualFile outputPath = extension.getCompilerOutputPath();
         if (outputPath == null) return null;
         return Paths.get(outputPath.getParent().getPath());
-    }
-
-    /**
-     * Get an asset folder of this module.
-     *
-     * @return the asset folder of this module.
-     */
-    public @Nullable Path getAssetFolder() {
-        final VirtualFile assetsFolder = findAssetsFolder();
-        if (assetsFolder == null) return null;
-        return Paths.get(assetsFolder.getPath());
     }
 
     /**
@@ -152,12 +178,7 @@ public class JmeModuleComponent implements ModuleComponent {
     }
 
     @Override
-    public void projectClosed() {
-
-    }
-
-    @Override
     public void disposeComponent() {
-
+        notificationListener.dispose();
     }
 }

@@ -248,4 +248,19 @@ public class JmbInstance extends Thread {
             }
         });
     }
+
+    /**
+     * Send the command to jMB if we already have running instance.
+     *
+     * @param command the command.
+     */
+    public synchronized void sendCommandIfRunning(@NotNull final ClientCommand command) {
+        if (!ready) return;
+        EXECUTOR_SERVICE.execute(() -> {
+            final Server server = getServer();
+            if (server != null) {
+                server.sendPacket(command);
+            }
+        });
+    }
 }
