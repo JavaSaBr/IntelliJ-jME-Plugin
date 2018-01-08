@@ -6,6 +6,7 @@ import com.intellij.openapi.ui.Messages;
 import com.ss.jme.plugin.JmeMessagesBundle;
 import com.ss.jme.plugin.JmeModuleComponent;
 import com.ss.jme.plugin.jmb.command.client.ClientCommand;
+import com.ss.jme.plugin.jmb.command.client.InitClasspathClientCommand;
 import com.ss.jme.plugin.jmb.command.server.EmptyServerCommand;
 import com.ss.jme.plugin.util.JmePluginUtils;
 import com.ss.rlib.concurrent.util.ConcurrentUtils;
@@ -115,7 +116,7 @@ public class JmbInstance extends Thread {
 
             process = null;
             ready = false;
-            server = null;
+            setServer(null);
         }
     }
 
@@ -191,19 +192,22 @@ public class JmbInstance extends Thread {
             return;
         }
 
-        final Server server = getServer();
+        Server server = getServer();
         if (server != null) {
             server.destroy();
         }
 
         while (true) {
             try {
-                this.server = clientNetwork.connect(new InetSocketAddress(freePort));
+                server = clientNetwork.connect(new InetSocketAddress(freePort));
+                server.sendPacket(new InitClasspathClientCommand(moduleComponent.getCompileOutput(), moduleComponent.getLibraries()));
+                setServer(server);
                 break;
             } catch (final RuntimeException e) {
                 ThreadUtils.sleep(1000);
             }
         }
+
 
         this.process = process;
         this.wasFailed = false;
@@ -219,6 +223,15 @@ public class JmbInstance extends Thread {
      */
     private @Nullable Server getServer() {
         return server;
+    }
+
+    /**
+     * Set the server of jMB.
+     *
+     * @param server the server of jMB.
+     */
+    private void setServer(@Nullable final Server server) {
+        this.server = server;
     }
 
     /**

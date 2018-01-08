@@ -2,12 +2,15 @@ package com.ss.jme.plugin;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleComponent;
-import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.roots.*;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.ss.jme.plugin.jmb.JmbInstance;
 import com.ss.jme.plugin.jmb.command.client.ClientCommand;
+import com.ss.rlib.util.array.Array;
+import com.ss.rlib.util.array.ArrayCollectors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.jps.model.java.JavaResourceRootType;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -50,6 +53,51 @@ public class JmeModuleComponent implements ModuleComponent {
     }
 
     /**
+     * Get all libraries of this module.
+     *
+     * @return the list of libraries.
+     */
+    public @NotNull Array<Path> getLibraries() {
+        return Arrays.stream(rootManager.getOrderEntries())
+                .filter(LibraryOrderEntry.class::isInstance)
+                .map(LibraryOrderEntry.class::cast)
+                .filter(entry -> entry.getScope() == DependencyScope.COMPILE)
+                .flatMap(orderEntry -> Arrays.stream(orderEntry.getFiles(OrderRootType.CLASSES)))
+                .map(VirtualFile::getPath)
+                .map(this::prepareLibraryPath)
+                .map(path -> Paths.get(path))
+                .collect(ArrayCollectors.simple(Path.class));
+    }
+
+    /**
+     * Prepare the library path.
+     *
+     * @param path the library path
+     * @return the prepared library path
+     */
+    private @NotNull String prepareLibraryPath(@NotNull final String path) {
+        if (path.endsWith("!/")) {
+            return path.substring(0, path.length() - 2);
+        } else if (path.endsWith("!\\")) {
+            return path.substring(0, path.length() - 2);
+        }
+        return path;
+    }
+
+    /**
+     * Get the path to compilation output.
+     *
+     * @return the path to compilation output.
+     */
+    public @Nullable Path getCompileOutput() {
+        final CompilerModuleExtension extension = CompilerModuleExtension.getInstance(module);
+        if (extension == null) return null;
+        final VirtualFile outputPath = extension.getCompilerOutputPath();
+        if (outputPath == null) return null;
+        return Paths.get(outputPath.getParent().getPath());
+    }
+
+    /**
      * Get an asset folder of this module.
      *
      * @return the asset folder of this module.
@@ -67,8 +115,7 @@ public class JmeModuleComponent implements ModuleComponent {
      */
     public @Nullable Path getAssetFolder(@NotNull final VirtualFile file) {
         final String path = file.getPath();
-        final VirtualFile[] sourceRoots = rootManager.getSourceRoots();
-        return Arrays.stream(sourceRoots)
+        return rootManager.getSourceRoots(JavaResourceRootType.RESOURCE).stream()
                 .filter(rootFile -> path.startsWith(rootFile.getPath()))
                 .findFirst().map(result -> Paths.get(result.getPath()))
                 .orElse(null);
@@ -81,8 +128,7 @@ public class JmeModuleComponent implements ModuleComponent {
      */
     private @Nullable VirtualFile findAssetsFolder() {
 
-        final VirtualFile[] sourceRoots = rootManager.getSourceRoots();
-        final Optional<VirtualFile> assetsFolder = Arrays.stream(sourceRoots)
+        final Optional<VirtualFile> assetsFolder = rootManager.getSourceRoots(JavaResourceRootType.RESOURCE).stream()
                 .filter(file -> file.getName().endsWith("assets"))
                 .findFirst();
 
@@ -90,8 +136,7 @@ public class JmeModuleComponent implements ModuleComponent {
             return assetsFolder.get();
         }
 
-        final Optional<VirtualFile> resourcesFolder = Arrays.stream(sourceRoots)
-                .filter(file -> file.getName().endsWith("resources"))
+        final Optional<VirtualFile> resourcesFolder = rootManager.getSourceRoots(JavaResourceRootType.RESOURCE).stream()
                 .findFirst();
 
         return resourcesFolder.orElse(null);
