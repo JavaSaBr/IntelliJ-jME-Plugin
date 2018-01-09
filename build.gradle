@@ -27,8 +27,8 @@ intellij {
     pluginName 'IntelliJ-jME-Plugin'
 }
 
-group 'org.jetbrains'
-version '1.0' // Plugin version
+group 'com.ss.jme.plugin'
+version '1.0.1' // Plugin version
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
