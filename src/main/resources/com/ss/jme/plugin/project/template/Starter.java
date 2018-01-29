@@ -14,6 +14,8 @@ public class Starter extends Application {
         final AppSettings settings = new AppSettings(true);
         settings.setResolution(1024, 768);
         settings.setFullscreen(false);
+        settings.setGammaCorrection(true);
+        settings.setRenderer(AppSettings.LWJGL_OPENGL33);
 
         final GameApplication application = new GameApplication();
         application.setSettings(settings);
