@@ -1,6 +1,11 @@
 package com.jme.example;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.input.FlyByCamera;
+import com.jme3.input.InputManager;
+import com.jme3.input.KeyInput;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.TechniqueDef;
 import com.jme3.material.Material;
 import com.jme3.renderer.Camera;
@@ -40,7 +45,17 @@ public class GameApplication extends SimpleApplication {
         camera.setLocation(new Vector3f(99.50714F, 19.356062F, 44.070957F));
         camera.setRotation(new Quaternion(-0.042982846F, 0.90933293F, -0.09716145F, -0.40227568F));
 
-        getFlyByCamera().setMoveSpeed(5);
+        final FlyByCamera flyByCamera = getFlyByCamera();
+        flyByCamera.setMoveSpeed(5);
+
+        final InputManager inputManager = getInputManager();
+        inputManager.addMapping("enableMouse", new KeyTrigger(KeyInput.KEY_SPACE));
+        inputManager.addListener((ActionListener) (name, isPressed, tpf) -> {
+            if (isPressed) {
+                flyByCamera.setEnabled(!flyByCamera.isEnabled());
+                inputManager.setCursorVisible(!flyByCamera.isEnabled());
+            }
+        }, "enableMouse");
 
         rootNode.attachChild(assetManager.loadModel("Scenes/SimpleScene.j3s"));
     }
