@@ -13,4 +13,5 @@ import javax.swing.*;
 public interface JmeIcons {
 
     @NotNull Icon JME_16 = IconLoader.getIcon("/com/ss/jme/plugin/ui/icons/jme.png"); // 16x16
+    @NotNull Icon JMB_16 = IconLoader.getIcon("/com/ss/jme/plugin/ui/icons/jmb.png"); // 16x16
 }

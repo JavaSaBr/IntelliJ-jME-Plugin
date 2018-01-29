@@ -26,6 +26,7 @@
 
     <extensions defaultExtensionNs="org.jetbrains.plugins.gradle">
         <frameworkSupport implementation="com.ss.jme.plugin.framework.support.JmeFrameworkSupportProvider"/>
+        <frameworkSupport implementation="com.ss.jme.plugin.framework.support.JmbFrameworkSupportProvider"/>
     </extensions>
 
 
