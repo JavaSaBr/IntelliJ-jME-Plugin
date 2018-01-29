@@ -28,18 +28,24 @@ public class JmeFrameworkSupportProvider extends GradleFrameworkSupportProvider 
     @NotNull
     private static final String NATIVE_BUILD_SCRIPT_PATH = "com/ss/jme/plugin/project/template/build-native.xml";
     private static final String LOGO_IMAGE_PATH = "com/ss/jme/plugin/project/template/jme-logo.png";
+    private static final String SIMPLE_SCENE_PATH = "com/ss/jme/plugin/project/template/SimpleScene.j3s";
+    private static final String TERRAIN_PATH = "com/ss/jme/plugin/project/template/ground03.tga";
+    private static final String TERRAIN_ALPHA_1_PATH = "com/ss/jme/plugin/project/template/terrain-alpha-blend-1.png";
+    private static final String TERRAIN_ALPHA_2_PATH = "com/ss/jme/plugin/project/template/terrain-alpha-blend-2.png";
+    private static final String TERRAIN_ALPHA_3_PATH = "com/ss/jme/plugin/project/template/terrain-alpha-blend-3.png";
     private static final String GAME_APPLICATION_PATH = "com/ss/jme/plugin/project/template/GameApplication.java";
     private static final String STARTER_PATH = "com/ss/jme/plugin/project/template/Starter.java";
 
-    @NotNull
     private static final String NATIVE_BUILD_SCRIPT;
-    @NotNull
     private static final String GAME_APPLICATION;
-    @NotNull
     private static final String STARTER;
 
-    @NotNull
     private static final byte[] LOGO_IMAGE;
+    private static final byte[] SIMPLE_SCENE;
+    private static final byte[] TERRAIN;
+    private static final byte[] TERRAIN_ALPHA_1;
+    private static final byte[] TERRAIN_ALPHA_2;
+    private static final byte[] TERRAIN_ALPHA_3;
 
     static {
         try {
@@ -48,6 +54,11 @@ public class JmeFrameworkSupportProvider extends GradleFrameworkSupportProvider 
             GAME_APPLICATION = FileUtils.read(classLoader.getResourceAsStream(GAME_APPLICATION_PATH));
             STARTER = FileUtils.read(classLoader.getResourceAsStream(STARTER_PATH));
             LOGO_IMAGE = IOUtils.toByteArray(classLoader.getResourceAsStream(LOGO_IMAGE_PATH));
+            SIMPLE_SCENE = IOUtils.toByteArray(classLoader.getResourceAsStream(SIMPLE_SCENE_PATH));
+            TERRAIN = IOUtils.toByteArray(classLoader.getResourceAsStream(TERRAIN_PATH));
+            TERRAIN_ALPHA_1 = IOUtils.toByteArray(classLoader.getResourceAsStream(TERRAIN_ALPHA_1_PATH));
+            TERRAIN_ALPHA_2 = IOUtils.toByteArray(classLoader.getResourceAsStream(TERRAIN_ALPHA_2_PATH));
+            TERRAIN_ALPHA_3 = IOUtils.toByteArray(classLoader.getResourceAsStream(TERRAIN_ALPHA_3_PATH));
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
@@ -67,63 +78,50 @@ public class JmeFrameworkSupportProvider extends GradleFrameworkSupportProvider 
                            @NotNull final ModifiableModelsProvider modifiableModelsProvider,
                            @NotNull final BuildScriptDataBuilder buildScriptData) {
 
-        buildScriptData.addBuildscriptRepositoriesDefinition("mavenCentral()")
-                .addBuildscriptDependencyNotation("classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.0'")
+        buildScriptData
+
+                .addRepositoriesDefinition("jcenter()")
+                .addRepositoriesDefinition("mavenCentral()")
+                .addRepositoriesDefinition("maven { url 'https://jitpack.io' }")
+                .addRepositoriesDefinition("maven { url \"https://dl.bintray.com/stephengold/jme3utilities\" }")
+                .addRepositoriesDefinition("maven { url \"http://dl.bintray.com/jmonkeyengine/org.jmonkeyengine\" }")
+
                 .addPluginDefinition("apply plugin: 'maven'")
-                .addPluginDefinition("apply plugin: 'idea'")
                 .addPluginDefinition("apply plugin: 'java'")
-                .addPluginDefinition("apply plugin: 'org.junit.platform.gradle.plugin'")
+                .addPluginDefinition("apply plugin: 'application'")
+
                 .addPropertyDefinition("sourceCompatibility = 1.8")
                 .addPropertyDefinition("targetCompatibility = 1.8")
-                .addPropertyDefinition("// replace resources folder to asset folder\n" +
+                .addPropertyDefinition("" +
+                        "// replace resources folder to asset folder\n" +
                         "sourceSets {\n" +
                         "    main {\n" +
                         "        resources {\n" +
                         "            srcDirs= [\"src/main/assets\"]\n" +
                         "        }\n" +
                         "    }\n" +
-                        "    test {\n" +
-                        "        resources {\n" +
-                        "            srcDirs= [\"src/test/assets\"]\n" +
-                        "        }\n" +
-                        "    }\n" +
-                        "}\n\n" +
-                        "// java version of tests\n" +
-                        "compileTestJava {\n" +
-                        "    sourceCompatibility = 1.8\n" +
-                        "    targetCompatibility = 1.8\n" +
-                        "    options.compilerArgs += '-parameters'\n" +
                         "}\n\n" +
                         "// additional properties for native build \n" +
-                        "ext.applicationTitle = \"jME exapmle\"\n" +
+                        "ext.applicationTitle = \"jME example\"\n" +
                         "ext.applicationVendor = \"No vendor\"\n" +
-                        "ext.applicationMainClass = \"com.jme.example.Starter\"\n\n" +
-                        "// configuring junit tests\n" +
-                        "ext.junitPlatformVersion = '1.0.0'\n" +
-                        "ext.junitJupiterVersion = '5.0.0'\n" +
-                        "ext.log4jVersion = '2.6.2'\n\n" +
-                        "// configuring junit platform\n" +
-                        "junitPlatform {\n" +
-                        "    logManager 'org.apache.logging.log4j.jul.LogManager'\n" +
-                        "}\n\n" +
+                        "ext.applicationMainClass = \"com.jme.example.Starter\"\n" +
+                        "mainClassName = ext.applicationMainClass\n\n" +
                         "// define version of jME\n" +
-                        "def jme3 = [v: '3.1.0-stable', g: 'org.jmonkeyengine']\n")
-                .addRepositoriesDefinition("maven { url \"http://dl.bintray.com/jmonkeyengine/org.jmonkeyengine\" }")
+                        "def jme3 = [v: '3.2.1-stable', g: 'org.jmonkeyengine']\n")
                 .addDependencyNotation("compile \"${jme3.g}:jme3-core:${jme3.v}\"")
+                .addDependencyNotation("compile \"${jme3.g}:jme3-effects:${jme3.v}\"")
+                .addDependencyNotation("compile \"${jme3.g}:jme3-bullet:${jme3.v}\"")
+                .addDependencyNotation("compile \"${jme3.g}:jme3-bullet-native:${jme3.v}\"")
+                .addDependencyNotation("compile \"${jme3.g}:jme3-terrain:${jme3.v}\"")
+                .addDependencyNotation("runtime \"${jme3.g}:jme3-plugins:${jme3.v}\"")
                 .addDependencyNotation("runtime \"${jme3.g}:jme3-lwjgl3:${jme3.v}\"")
+                .addDependencyNotation("runtime \"${jme3.g}:jme3-jogg:${jme3.v}\"")
                 .addDependencyNotation("runtime \"${jme3.g}:jme3-desktop:${jme3.v}\"")
-                .addDependencyNotation("testCompile \"${jme3.g}:jme3-core:${jme3.v}\"")
-                .addDependencyNotation("testRuntime \"${jme3.g}:jme3-lwjgl3:${jme3.v}\"")
-                .addDependencyNotation("testRuntime \"${jme3.g}:jme3-desktop:${jme3.v}\"")
 
-                .addDependencyNotation("testCompile \"org.junit.platform:junit-platform-commons:$junitPlatformVersion\"")
-                .addDependencyNotation("testRuntime \"org.junit.platform:junit-platform-engine:$junitPlatformVersion\"")
-                .addDependencyNotation("testCompile \"org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion\"")
-                .addDependencyNotation("testRuntime \"org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion\"")
-                .addDependencyNotation("testRuntime \"org.apache.logging.log4j:log4j-core:$log4jVersion\"")
-                .addDependencyNotation("testRuntime \"org.apache.logging.log4j:log4j-jul:$log4jVersion\"")
-                .addDependencyNotation("// Only needed to run tests in an (IntelliJ) IDE(A) that bundles an older version\n" +
-                        "    testCompile \"org.junit.platform:junit-platform-launcher:$junitPlatformVersion\"")
+                .addDependencyNotation("compile 'com.github.JavaSaBr:jmonkeybuilder-extension:1.9.8'")
+                .addDependencyNotation("compile 'com.github.JavaSaBr:tonegodemitter:2.4.1'")
+                .addDependencyNotation("compile 'jme3utilities:SkyControl:0.9.11'")
+
                 .addOther("" +
                         "ant.importBuild('build-native.xml')\n" +
                         "ant.basedir = new File(buildDir.getParentFile(), \"native-build\")\n" +
@@ -168,18 +166,43 @@ public class JmeFrameworkSupportProvider extends GradleFrameworkSupportProvider 
             VfsUtil.saveText(nativeBuildFile, NATIVE_BUILD_SCRIPT);
 
             // creates example classes
-            final VirtualFile srcDir = baseDir.createChildDirectory(this, "src");
-            final VirtualFile mainDir = srcDir.createChildDirectory(this, "main");
-            final VirtualFile assetsDir = mainDir.createChildDirectory(this, "assets");
-            final VirtualFile texturesDir = assetsDir.createChildDirectory(this, "textures");
+            final VirtualFile mainDir = baseDir.createChildDirectory(this, "src")
+                    .createChildDirectory(this, "main");
 
+            final VirtualFile assetsDir = mainDir.createChildDirectory(this, "assets");
+            assetsDir.createChildDirectory(this, "Models");
+            assetsDir.createChildDirectory(this, "Sounds");
+            assetsDir.createChildDirectory(this, "Interface");
+            assetsDir.createChildDirectory(this, "MatDefs");
+            assetsDir.createChildDirectory(this, "Materials");
+            assetsDir.createChildDirectory(this, "Shaders");
+
+            final VirtualFile texturesDir = assetsDir.createChildDirectory(this, "Textures");
             final VirtualFile logoImageFile = texturesDir.createChildData(this, "jme-logo.png");
             logoImageFile.setBinaryContent(LOGO_IMAGE);
 
-            final VirtualFile javaDir = mainDir.createChildDirectory(this, "java");
-            final VirtualFile comDir = javaDir.createChildDirectory(this, "com");
-            final VirtualFile jmeDir = comDir.createChildDirectory(this, "jme");
-            final VirtualFile exampleDir = jmeDir.createChildDirectory(this, "example");
+            final VirtualFile terrainAlphaDir = texturesDir.createChildDirectory(this, "TerrainAlpha");
+
+            terrainAlphaDir.createChildData(this, "terrain-alpha-blend-1.png")
+                    .setBinaryContent(TERRAIN_ALPHA_1);
+            terrainAlphaDir.createChildData(this, "terrain-alpha-blend-2.png")
+                    .setBinaryContent(TERRAIN_ALPHA_2);
+            terrainAlphaDir.createChildData(this, "terrain-alpha-blend-3.png")
+                    .setBinaryContent(TERRAIN_ALPHA_3);
+
+            final VirtualFile terrainDir = texturesDir.createChildDirectory(this, "Terrain");
+            terrainDir.createChildData(this, "ground03.tga")
+                    .setBinaryContent(TERRAIN);
+
+            final VirtualFile scenesDir = assetsDir.createChildDirectory(this, "Scenes");
+            scenesDir.createChildData(this, "SimpleScene.j3s")
+                    .setBinaryContent(SIMPLE_SCENE);
+
+            final VirtualFile exampleDir = mainDir.createChildDirectory(this, "java")
+                    .createChildDirectory(this, "com")
+                    .createChildDirectory(this, "jme")
+                    .createChildDirectory(this, "example");
+
             final VirtualFile gameApplicationFile = exampleDir.createChildData(this, "GameApplication.java");
             final VirtualFile starterFile = exampleDir.createChildData(this, "Starter.java");
 
