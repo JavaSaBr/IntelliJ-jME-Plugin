@@ -7,14 +7,10 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.TechniqueDef;
-import com.jme3.material.Material;
-import com.jme3.renderer.Camera;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.shape.Box;
-import com.jme3.texture.Texture;
 import com.jme3.post.FilterPostProcessor;
+import com.jme3.renderer.Camera;
 import com.ss.editor.extension.loader.SceneLoader;
 
 /**
@@ -58,5 +54,11 @@ public class GameApplication extends SimpleApplication {
         }, "enableMouse");
 
         rootNode.attachChild(assetManager.loadModel("Scenes/SimpleScene.j3s"));
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        System.exit(0);
     }
 }

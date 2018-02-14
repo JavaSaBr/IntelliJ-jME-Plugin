@@ -237,6 +237,8 @@ public class JmbInstance extends Thread {
             env.put("Editor.assetFolder", assetFolder.toString());
         }
 
+        builder.inheritIO();
+
         final Process process;
         try {
             process = builder.start();
@@ -266,7 +268,6 @@ public class JmbInstance extends Thread {
                 ThreadUtils.sleep(1000);
             }
         }
-
 
         this.process = process;
         this.wasFailed = false;
