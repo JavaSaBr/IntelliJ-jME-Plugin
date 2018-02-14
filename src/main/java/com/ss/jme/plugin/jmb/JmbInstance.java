@@ -2,6 +2,10 @@ package com.ss.jme.plugin.jmb;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.progress.Task;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.ss.jme.plugin.JmeMessagesBundle;
 import com.ss.jme.plugin.JmeModuleComponent;
@@ -11,10 +15,13 @@ import com.ss.jme.plugin.jmb.command.server.EmptyServerCommand;
 import com.ss.jme.plugin.util.JmePluginUtils;
 import com.ss.rlib.concurrent.util.ConcurrentUtils;
 import com.ss.rlib.concurrent.util.ThreadUtils;
+import com.ss.rlib.network.NetworkConfig;
 import com.ss.rlib.network.NetworkFactory;
 import com.ss.rlib.network.client.ClientNetwork;
+import com.ss.rlib.network.client.ConnectHandler;
 import com.ss.rlib.network.client.server.Server;
 import com.ss.rlib.network.packet.ReadablePacketRegistry;
+import com.ss.rlib.util.FileUtils;
 import com.ss.rlib.util.Utils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,6 +49,20 @@ public class JmbInstance extends Thread {
 
     @NotNull
     private static final ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
+
+    @NotNull
+    private static final NetworkConfig NETWORK_CONFIG = new NetworkConfig() {
+
+        @Override
+        public int getReadBufferSize() {
+            return Short.MAX_VALUE * 2;
+        }
+
+        @Override
+        public int getWriteBufferSize() {
+            return Short.MAX_VALUE * 2;
+        }
+    };
 
     /**
      * The module.
@@ -92,7 +113,7 @@ public class JmbInstance extends Thread {
     public JmbInstance(@NotNull final Module module) {
         this.module = module;
         this.notificator = new Object();
-        this.clientNetwork = NetworkFactory.newDefaultAsyncClientNetwork(PACKET_REGISTRY);
+        this.clientNetwork = NetworkFactory.newDefaultAsyncClientNetwork(NETWORK_CONFIG, PACKET_REGISTRY, ConnectHandler.newDefault());
         start();
     }
 
@@ -140,12 +161,41 @@ public class JmbInstance extends Thread {
 
     /**
      * Start an instance of jMB.
+     *
+     * @param project the project which request starting an instance.
      */
-    private synchronized void startInstance() {
-        if (ready) return;
+    private void startInstance(@NotNull final Project project) {
+
+        if (ready) {
+            return;
+        }
+
+        final String title = JmeMessagesBundle.message("jmb.instance.launch.title");
+        ProgressManager.getInstance().run(new Task.Modal(project, title, false) {
+            @Override
+            public void run(@NotNull final ProgressIndicator indicator) {
+                indicator.setIndeterminate(true);
+                startInstanceImpl();
+            }
+        });
+    }
+
+    /**
+     * Execute starting jMB.
+     */
+    private synchronized void startInstanceImpl() {
+
+        if (ready) {
+            return;
+        }
 
         final Path pathToJmb = JmePluginUtils.getPathToJmb();
         if (wasFailed && pathToJmb != null && pathToJmb.equals(getLastJmbPath())) {
+            SwingUtilities.invokeLater(() -> {
+                final String message = JmeMessagesBundle.message("jme.instance.error.wasFailed.message");
+                final String title = JmeMessagesBundle.message("jme.instance.error.wasFailed.title");
+                Messages.showWarningDialog(message, title);
+            });
             return;
         }
 
@@ -170,7 +220,16 @@ public class JmbInstance extends Thread {
         final JmeModuleComponent moduleComponent = module.getComponent(JmeModuleComponent.class);
         final Path assetFolder = moduleComponent.getAssetFolder();
 
-        final ProcessBuilder builder = new ProcessBuilder(pathToJmb.toString());
+        final ProcessBuilder builder;
+
+        if ("jar".equals(FileUtils.getExtension(pathToJmb))) {
+            final Path folder = pathToJmb.getParent();
+            builder = new ProcessBuilder("java", "-jar", pathToJmb.toString());
+            builder.directory(folder.toFile());
+        } else {
+            builder = new ProcessBuilder(pathToJmb.toString());
+        }
+
         final Map<String, String> env = builder.environment();
         env.put("Server.api.port", String.valueOf(freePort));
 
@@ -238,10 +297,11 @@ public class JmbInstance extends Thread {
      * Send the command to jMB.
      *
      * @param command the command.
+     * @param project the project.
      */
-    public synchronized void sendCommand(@NotNull final ClientCommand command) {
+    public void sendCommand(@NotNull final ClientCommand command, @NotNull final Project project) {
         EXECUTOR_SERVICE.execute(() -> {
-            startInstance();
+            startInstance(project);
             final Server server = getServer();
             if (server != null) {
                 server.sendPacket(command);
@@ -254,7 +314,7 @@ public class JmbInstance extends Thread {
      *
      * @param command the command.
      */
-    public synchronized void sendCommandIfRunning(@NotNull final ClientCommand command) {
+    public void sendCommandIfRunning(@NotNull final ClientCommand command) {
         if (!ready) return;
         EXECUTOR_SERVICE.execute(() -> {
             final Server server = getServer();

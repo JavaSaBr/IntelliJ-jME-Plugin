@@ -82,7 +82,7 @@ public class JmePluginUtils {
 
         if (!finished) {
             SwingUtilities.invokeLater(() -> {
-                final String message = JmeMessagesBundle.message("jme.instance.error.doesNotSupport.message", path.toString());
+                final String message = JmeMessagesBundle.message("jme.instance.error.doesNotSupport.messageByTimeout", path.toString());
                 final String title = JmeMessagesBundle.message("jme.instance.error.doesNotSupport.title");
                 Messages.showWarningDialog(message, title);
             });

@@ -41,6 +41,7 @@ public class JmbFrameworkSupportProvider extends GradleFrameworkSupportProvider 
     public JmbFrameworkSupportProvider() {
     }
 
+
     @Override
     public @NotNull FrameworkTypeEx getFrameworkType() {
         return new JmbFrameworkTypeEx("jMonkeyBuilder", this);

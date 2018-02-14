@@ -25,24 +25,31 @@ import java.io.IOException;
  */
 public class JmeFrameworkSupportProvider extends GradleFrameworkSupportProvider {
 
-    @NotNull
     private static final String NATIVE_BUILD_SCRIPT_PATH = "com/ss/jme/plugin/project/template/build-native.xml";
     private static final String LOGO_IMAGE_PATH = "com/ss/jme/plugin/project/template/jme-logo.png";
     private static final String SIMPLE_SCENE_PATH = "com/ss/jme/plugin/project/template/SimpleScene.j3s";
-    private static final String TERRAIN_PATH = "com/ss/jme/plugin/project/template/ground03.tga";
+    private static final String TERRAIN_1_PATH = "com/ss/jme/plugin/project/template/ground01.tga";
+    private static final String TERRAIN_2_PATH = "com/ss/jme/plugin/project/template/ground02.tga";
+    private static final String TERRAIN_3_PATH = "com/ss/jme/plugin/project/template/ground03.tga";
     private static final String TERRAIN_ALPHA_1_PATH = "com/ss/jme/plugin/project/template/terrain-alpha-blend-1.png";
     private static final String TERRAIN_ALPHA_2_PATH = "com/ss/jme/plugin/project/template/terrain-alpha-blend-2.png";
     private static final String TERRAIN_ALPHA_3_PATH = "com/ss/jme/plugin/project/template/terrain-alpha-blend-3.png";
+    private static final String TREE_PATH = "com/ss/jme/plugin/project/template/terrain-alpha-blend-3.png";
+    private static final String MIRROR_PATH = "com/ss/jme/plugin/project/template/Mirror.j3m";
     private static final String GAME_APPLICATION_PATH = "com/ss/jme/plugin/project/template/GameApplication.java";
     private static final String STARTER_PATH = "com/ss/jme/plugin/project/template/Starter.java";
 
     private static final String NATIVE_BUILD_SCRIPT;
+    private static final String MIRROR;
     private static final String GAME_APPLICATION;
     private static final String STARTER;
 
     private static final byte[] LOGO_IMAGE;
     private static final byte[] SIMPLE_SCENE;
-    private static final byte[] TERRAIN;
+    private static final byte[] TREE;
+    private static final byte[] TERRAIN_1;
+    private static final byte[] TERRAIN_2;
+    private static final byte[] TERRAIN_3;
     private static final byte[] TERRAIN_ALPHA_1;
     private static final byte[] TERRAIN_ALPHA_2;
     private static final byte[] TERRAIN_ALPHA_3;
@@ -52,10 +59,14 @@ public class JmeFrameworkSupportProvider extends GradleFrameworkSupportProvider 
             final ClassLoader classLoader = JmeFrameworkSupportProvider.class.getClassLoader();
             NATIVE_BUILD_SCRIPT = FileUtils.read(classLoader.getResourceAsStream(NATIVE_BUILD_SCRIPT_PATH));
             GAME_APPLICATION = FileUtils.read(classLoader.getResourceAsStream(GAME_APPLICATION_PATH));
+            MIRROR = FileUtils.read(classLoader.getResourceAsStream(MIRROR_PATH));
             STARTER = FileUtils.read(classLoader.getResourceAsStream(STARTER_PATH));
+            TREE = IOUtils.toByteArray(classLoader.getResourceAsStream(TREE_PATH));
             LOGO_IMAGE = IOUtils.toByteArray(classLoader.getResourceAsStream(LOGO_IMAGE_PATH));
             SIMPLE_SCENE = IOUtils.toByteArray(classLoader.getResourceAsStream(SIMPLE_SCENE_PATH));
-            TERRAIN = IOUtils.toByteArray(classLoader.getResourceAsStream(TERRAIN_PATH));
+            TERRAIN_1 = IOUtils.toByteArray(classLoader.getResourceAsStream(TERRAIN_1_PATH));
+            TERRAIN_2 = IOUtils.toByteArray(classLoader.getResourceAsStream(TERRAIN_2_PATH));
+            TERRAIN_3 = IOUtils.toByteArray(classLoader.getResourceAsStream(TERRAIN_3_PATH));
             TERRAIN_ALPHA_1 = IOUtils.toByteArray(classLoader.getResourceAsStream(TERRAIN_ALPHA_1_PATH));
             TERRAIN_ALPHA_2 = IOUtils.toByteArray(classLoader.getResourceAsStream(TERRAIN_ALPHA_2_PATH));
             TERRAIN_ALPHA_3 = IOUtils.toByteArray(classLoader.getResourceAsStream(TERRAIN_ALPHA_3_PATH));
@@ -84,7 +95,7 @@ public class JmeFrameworkSupportProvider extends GradleFrameworkSupportProvider 
                 .addRepositoriesDefinition("mavenCentral()")
                 .addRepositoriesDefinition("maven { url 'https://jitpack.io' }")
                 .addRepositoriesDefinition("maven { url \"https://dl.bintray.com/stephengold/jme3utilities\" }")
-                .addRepositoriesDefinition("maven { url \"http://dl.bintray.com/jmonkeyengine/org.jmonkeyengine\" }")
+                .addRepositoriesDefinition("maven { url \"https://dl.bintray.com/jmonkeyengine/org.jmonkeyengine\" }")
 
                 .addPluginDefinition("apply plugin: 'maven'")
                 .addPluginDefinition("apply plugin: 'java'")
@@ -120,6 +131,8 @@ public class JmeFrameworkSupportProvider extends GradleFrameworkSupportProvider 
 
                 .addDependencyNotation("compile 'com.github.JavaSaBr:jmonkeybuilder-extension:1.9.8'")
                 .addDependencyNotation("compile 'com.github.JavaSaBr:tonegodemitter:2.4.1'")
+                .addDependencyNotation("compile 'com.github.JavaSaBr:SimArboreal:1.3.0'")
+                .addDependencyNotation("compile 'com.github.JavaSaBr:SimArboreal:1.3.0:assets'")
                 .addDependencyNotation("compile 'jme3utilities:SkyControl:0.9.11'")
 
                 .addOther("" +
@@ -143,7 +156,7 @@ public class JmeFrameworkSupportProvider extends GradleFrameworkSupportProvider 
                         "    from configurations.runtime\n" +
                         "}\n\n" +
                         "task wrapper(type: Wrapper) {\n" +
-                        "    gradleVersion = '4.4'\n" +
+                        "    gradleVersion = '4.5.1'\n" +
                         "}");
 
         final Project project = module.getProject();
@@ -170,11 +183,9 @@ public class JmeFrameworkSupportProvider extends GradleFrameworkSupportProvider 
                     .createChildDirectory(this, "main");
 
             final VirtualFile assetsDir = mainDir.createChildDirectory(this, "assets");
-            assetsDir.createChildDirectory(this, "Models");
             assetsDir.createChildDirectory(this, "Sounds");
             assetsDir.createChildDirectory(this, "Interface");
             assetsDir.createChildDirectory(this, "MatDefs");
-            assetsDir.createChildDirectory(this, "Materials");
             assetsDir.createChildDirectory(this, "Shaders");
 
             final VirtualFile texturesDir = assetsDir.createChildDirectory(this, "Textures");
@@ -191,8 +202,19 @@ public class JmeFrameworkSupportProvider extends GradleFrameworkSupportProvider 
                     .setBinaryContent(TERRAIN_ALPHA_3);
 
             final VirtualFile terrainDir = texturesDir.createChildDirectory(this, "Terrain");
+            terrainDir.createChildData(this, "ground01.tga")
+                    .setBinaryContent(TERRAIN_1);
+            terrainDir.createChildData(this, "ground02.tga")
+                    .setBinaryContent(TERRAIN_2);
             terrainDir.createChildData(this, "ground03.tga")
-                    .setBinaryContent(TERRAIN);
+                    .setBinaryContent(TERRAIN_3);
+
+            final VirtualFile materialsDir = assetsDir.createChildDirectory(this, "Materials");
+            VfsUtil.saveText(materialsDir.createChildData(this, "Mirror.j3m"), MIRROR);
+
+            final VirtualFile modelsDir = assetsDir.createChildDirectory(this, "Models");
+            modelsDir.createChildData(this, "tree1.j3o")
+                    .setBinaryContent(TREE);
 
             final VirtualFile scenesDir = assetsDir.createChildDirectory(this, "Scenes");
             scenesDir.createChildData(this, "SimpleScene.j3s")

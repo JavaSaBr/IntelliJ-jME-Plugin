@@ -92,7 +92,7 @@ public class JmeModuleComponent implements ModuleComponent, BuildManagerListener
                 .map(VirtualFile::getPath)
                 .map(this::prepareLibraryPath)
                 .map(path -> Paths.get(path))
-                .collect(ArrayCollectors.simple(Path.class));
+                .collect(ArrayCollectors.toArray(Path.class));
     }
 
     /**
@@ -174,7 +174,7 @@ public class JmeModuleComponent implements ModuleComponent, BuildManagerListener
      * @param command the command.
      */
     public void sendCommand(@NotNull final ClientCommand command) {
-        jmbInstance.sendCommand(command);
+        jmbInstance.sendCommand(command, module.getProject());
     }
 
     @Override
