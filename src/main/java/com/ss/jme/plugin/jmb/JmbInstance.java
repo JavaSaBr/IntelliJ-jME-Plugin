@@ -15,8 +15,10 @@ import com.ss.jme.plugin.jmb.command.server.EmptyServerCommand;
 import com.ss.jme.plugin.util.JmePluginUtils;
 import com.ss.rlib.concurrent.util.ConcurrentUtils;
 import com.ss.rlib.concurrent.util.ThreadUtils;
+import com.ss.rlib.network.NetworkConfig;
 import com.ss.rlib.network.NetworkFactory;
 import com.ss.rlib.network.client.ClientNetwork;
+import com.ss.rlib.network.client.ConnectHandler;
 import com.ss.rlib.network.client.server.Server;
 import com.ss.rlib.network.packet.ReadablePacketRegistry;
 import com.ss.rlib.util.FileUtils;
@@ -47,6 +49,20 @@ public class JmbInstance extends Thread {
 
     @NotNull
     private static final ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
+
+    @NotNull
+    private static final NetworkConfig NETWORK_CONFIG = new NetworkConfig() {
+
+        @Override
+        public int getReadBufferSize() {
+            return Short.MAX_VALUE * 2;
+        }
+
+        @Override
+        public int getWriteBufferSize() {
+            return Short.MAX_VALUE * 2;
+        }
+    };
 
     /**
      * The module.
@@ -97,7 +113,7 @@ public class JmbInstance extends Thread {
     public JmbInstance(@NotNull final Module module) {
         this.module = module;
         this.notificator = new Object();
-        this.clientNetwork = NetworkFactory.newDefaultAsyncClientNetwork(PACKET_REGISTRY);
+        this.clientNetwork = NetworkFactory.newDefaultAsyncClientNetwork(NETWORK_CONFIG, PACKET_REGISTRY, ConnectHandler.newDefault());
         start();
     }
 

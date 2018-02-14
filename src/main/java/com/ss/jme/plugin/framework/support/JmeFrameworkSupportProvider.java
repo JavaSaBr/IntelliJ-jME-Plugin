@@ -156,7 +156,7 @@ public class JmeFrameworkSupportProvider extends GradleFrameworkSupportProvider 
                         "    from configurations.runtime\n" +
                         "}\n\n" +
                         "task wrapper(type: Wrapper) {\n" +
-                        "    gradleVersion = '4.4'\n" +
+                        "    gradleVersion = '4.5.1'\n" +
                         "}");
 
         final Project project = module.getProject();
