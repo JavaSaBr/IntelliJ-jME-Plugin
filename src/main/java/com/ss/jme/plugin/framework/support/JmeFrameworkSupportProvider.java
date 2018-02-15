@@ -52,23 +52,23 @@ public class JmeFrameworkSupportProvider extends GradleFrameworkSupportProvider 
     static {
         try {
             final ClassLoader classLoader = JmeFrameworkSupportProvider.class.getClassLoader();
-            LOG.info("read " + NATIVE_BUILD_SCRIPT_PATH);
+            LOG.debug("read " + NATIVE_BUILD_SCRIPT_PATH);
             NATIVE_BUILD_SCRIPT = FileUtils.read(classLoader.getResourceAsStream(NATIVE_BUILD_SCRIPT_PATH));
-            LOG.info("read " + GAME_APPLICATION_PATH);
+            LOG.debug("read " + GAME_APPLICATION_PATH);
             GAME_APPLICATION = FileUtils.read(classLoader.getResourceAsStream(GAME_APPLICATION_PATH));
-            LOG.info("read " + STARTER_PATH);
+            LOG.debug("read " + STARTER_PATH);
             STARTER = FileUtils.read(classLoader.getResourceAsStream(STARTER_PATH));
-            LOG.info("read " + LOGO_IMAGE_PATH);
+            LOG.debug("read " + LOGO_IMAGE_PATH);
             LOGO_IMAGE = IOUtils.toByteArray(classLoader.getResourceAsStream(LOGO_IMAGE_PATH));
-            LOG.info("read " + SIMPLE_SCENE_PATH);
+            LOG.debug("read " + SIMPLE_SCENE_PATH);
             SIMPLE_SCENE = IOUtils.toByteArray(classLoader.getResourceAsStream(SIMPLE_SCENE_PATH));
-            LOG.info("read " + TERRAIN_PATH);
+            LOG.debug("read " + TERRAIN_PATH);
             TERRAIN = IOUtils.toByteArray(classLoader.getResourceAsStream(TERRAIN_PATH));
-            LOG.info("read " + TERRAIN_ALPHA_1_PATH);
+            LOG.debug("read " + TERRAIN_ALPHA_1_PATH);
             TERRAIN_ALPHA_1 = IOUtils.toByteArray(classLoader.getResourceAsStream(TERRAIN_ALPHA_1_PATH));
-            LOG.info("read " + TERRAIN_ALPHA_2_PATH);
+            LOG.debug("read " + TERRAIN_ALPHA_2_PATH);
             TERRAIN_ALPHA_2 = IOUtils.toByteArray(classLoader.getResourceAsStream(TERRAIN_ALPHA_2_PATH));
-            LOG.info("read " + TERRAIN_ALPHA_3_PATH);
+            LOG.debug("read " + TERRAIN_ALPHA_3_PATH);
             TERRAIN_ALPHA_3 = IOUtils.toByteArray(classLoader.getResourceAsStream(TERRAIN_ALPHA_3_PATH));
         } catch (final IOException e) {
             LOG.error(e);
