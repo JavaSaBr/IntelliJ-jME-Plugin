@@ -3,6 +3,7 @@ package com.ss.jme.plugin.framework.support;
 import com.intellij.framework.FrameworkTypeEx;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.externalSystem.model.project.ProjectId;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
@@ -25,7 +26,8 @@ import java.io.IOException;
  */
 public class JmeFrameworkSupportProvider extends GradleFrameworkSupportProvider {
 
-    @NotNull
+    private static final Logger LOG = Logger.getInstance("#com.ss.jme.plugin.framework.support.JmeFrameworkSupportProvider");
+
     private static final String NATIVE_BUILD_SCRIPT_PATH = "com/ss/jme/plugin/project/template/build-native.xml";
     private static final String LOGO_IMAGE_PATH = "com/ss/jme/plugin/project/template/jme-logo.png";
     private static final String SIMPLE_SCENE_PATH = "com/ss/jme/plugin/project/template/SimpleScene.j3s";
@@ -50,17 +52,26 @@ public class JmeFrameworkSupportProvider extends GradleFrameworkSupportProvider 
     static {
         try {
             final ClassLoader classLoader = JmeFrameworkSupportProvider.class.getClassLoader();
+            LOG.info("read " + NATIVE_BUILD_SCRIPT_PATH);
             NATIVE_BUILD_SCRIPT = FileUtils.read(classLoader.getResourceAsStream(NATIVE_BUILD_SCRIPT_PATH));
+            LOG.info("read " + GAME_APPLICATION_PATH);
             GAME_APPLICATION = FileUtils.read(classLoader.getResourceAsStream(GAME_APPLICATION_PATH));
+            LOG.info("read " + STARTER_PATH);
             STARTER = FileUtils.read(classLoader.getResourceAsStream(STARTER_PATH));
+            LOG.info("read " + LOGO_IMAGE_PATH);
             LOGO_IMAGE = IOUtils.toByteArray(classLoader.getResourceAsStream(LOGO_IMAGE_PATH));
+            LOG.info("read " + SIMPLE_SCENE_PATH);
             SIMPLE_SCENE = IOUtils.toByteArray(classLoader.getResourceAsStream(SIMPLE_SCENE_PATH));
+            LOG.info("read " + TERRAIN_PATH);
             TERRAIN = IOUtils.toByteArray(classLoader.getResourceAsStream(TERRAIN_PATH));
+            LOG.info("read " + TERRAIN_ALPHA_1_PATH);
             TERRAIN_ALPHA_1 = IOUtils.toByteArray(classLoader.getResourceAsStream(TERRAIN_ALPHA_1_PATH));
+            LOG.info("read " + TERRAIN_ALPHA_2_PATH);
             TERRAIN_ALPHA_2 = IOUtils.toByteArray(classLoader.getResourceAsStream(TERRAIN_ALPHA_2_PATH));
+            LOG.info("read " + TERRAIN_ALPHA_3_PATH);
             TERRAIN_ALPHA_3 = IOUtils.toByteArray(classLoader.getResourceAsStream(TERRAIN_ALPHA_3_PATH));
         } catch (final IOException e) {
-            e.printStackTrace();
+            LOG.error(e);
             throw new RuntimeException(e);
         }
     }
