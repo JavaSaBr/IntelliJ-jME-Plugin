@@ -60,6 +60,7 @@ public class JmeFrameworkSupportProvider extends GradleFrameworkSupportProvider 
             TERRAIN_ALPHA_2 = IOUtils.toByteArray(classLoader.getResourceAsStream(TERRAIN_ALPHA_2_PATH));
             TERRAIN_ALPHA_3 = IOUtils.toByteArray(classLoader.getResourceAsStream(TERRAIN_ALPHA_3_PATH));
         } catch (final IOException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
