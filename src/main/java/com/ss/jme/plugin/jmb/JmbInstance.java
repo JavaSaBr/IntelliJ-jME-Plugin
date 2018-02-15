@@ -119,16 +119,22 @@ public class JmbInstance extends Thread {
 
     @Override
     public void run() {
+
+        LOG.debug("Started background checking thread.");
+
         while (true) {
 
             if (process == null) {
                 synchronized (notificator) {
                     if (process == null) {
+                        LOG.debug("Waiting for a new jMB instance...");
                         ConcurrentUtils.waitInSynchronize(notificator);
                     }
                 }
             }
 
+            LOG.debug("Taken the jMB process: ", process);
+            LOG.debug("Started waiting for finishing of the process: ", process);
             try {
                 process.waitFor();
             } catch (final InterruptedException e) {
@@ -215,10 +221,16 @@ public class JmbInstance extends Thread {
             return;
         }
 
+        LOG.debug("starting a new jMB instance...");
+
         final int freePort = Utils.getFreePort(5000);
+
+        LOG.debug("free port: ", freePort);
 
         final JmeModuleComponent moduleComponent = module.getComponent(JmeModuleComponent.class);
         final Path assetFolder = moduleComponent.getAssetFolder();
+
+        LOG.debug("asset folder: ", assetFolder);
 
         final ProcessBuilder builder;
 
@@ -237,6 +249,12 @@ public class JmbInstance extends Thread {
             env.put("Editor.assetFolder", assetFolder.toString());
         }
 
+        builder.inheritIO();
+
+
+        LOG.debug("commands: ", builder.command());
+        LOG.debug("env: ", env);
+
         final Process process;
         try {
             process = builder.start();
@@ -253,26 +271,39 @@ public class JmbInstance extends Thread {
 
         Server server = getServer();
         if (server != null) {
+            LOG.debug("destroy the previous server: ", server);
             server.destroy();
         }
 
+        ThreadUtils.sleep(2000);
+
+        LOG.debug("connecting to the launched instance...");
+
         while (true) {
             try {
-                server = clientNetwork.connect(new InetSocketAddress(freePort));
+                LOG.debug("Trying to connect...");
+                server = clientNetwork.connect(new InetSocketAddress("localhost", freePort));
                 server.sendPacket(new InitClasspathClientCommand(moduleComponent.getCompileOutput(), moduleComponent.getLibraries()));
                 setServer(server);
                 break;
             } catch (final RuntimeException e) {
+                LOG.warn(e);
+                LOG.debug("Waiting for 1 sec.");
                 ThreadUtils.sleep(1000);
             }
         }
 
+        LOG.debug("Connected to the instance.");
 
         this.process = process;
         this.wasFailed = false;
         this.ready = true;
 
+        LOG.debug("Notify background thread.");
+
         ConcurrentUtils.notifyAll(notificator);
+
+        LOG.debug("jMB was started successfully.");
     }
 
     /**
