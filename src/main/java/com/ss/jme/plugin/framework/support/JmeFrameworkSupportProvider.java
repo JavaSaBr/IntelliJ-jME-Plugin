@@ -130,9 +130,9 @@ public class JmeFrameworkSupportProvider extends GradleFrameworkSupportProvider 
             .addDependencyNotation("runtime \"${jme3.g}:jme3-jogg:${jme3.v}\"")
             .addDependencyNotation("runtime \"${jme3.g}:jme3-desktop:${jme3.v}\"")
 
-            .addDependencyNotation("compile 'com.github.JavaSaBr:jmonkeybuilder-extension:1.9.8'")
+            .addDependencyNotation("compile 'com.github.JavaSaBr:jmonkeybuilder-extension:2.1.1'")
             .addDependencyNotation("compile 'com.github.JavaSaBr:tonegodemitter:2.4.1'")
-            .addDependencyNotation("compile 'jme3utilities:SkyControl:0.9.11'")
+            .addDependencyNotation("compile 'jme3utilities:SkyControl:0.9.12'")
 
             .addOther("" +
                 "ant.importBuild('build-native.xml')\n" +
@@ -155,7 +155,7 @@ public class JmeFrameworkSupportProvider extends GradleFrameworkSupportProvider 
                 "    from configurations.runtime\n" +
                 "}\n\n" +
                 "task wrapper(type: Wrapper) {\n" +
-                "    gradleVersion = '4.4'\n" +
+                "    gradleVersion = '4.5.1'\n" +
                 "}");
 
         final Project project = module.getProject();

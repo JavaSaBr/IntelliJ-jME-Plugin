@@ -11,7 +11,9 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.renderer.Camera;
+import com.jme3.scene.Spatial;
 import com.ss.editor.extension.loader.SceneLoader;
+import com.ss.editor.extension.util.JmbExtUtils;
 
 /**
  * The game application class.
@@ -53,7 +55,11 @@ public class GameApplication extends SimpleApplication {
             }
         }, "enableMouse");
 
-        rootNode.attachChild(assetManager.loadModel("Scenes/SimpleScene.j3s"));
+        final Spatial scene = assetManager.loadModel("Scenes/SimpleScene.j3s");
+
+        rootNode.attachChild(scene);
+
+        JmbExtUtils.resetPhysicsControlPositions(scene);
     }
 
     @Override
