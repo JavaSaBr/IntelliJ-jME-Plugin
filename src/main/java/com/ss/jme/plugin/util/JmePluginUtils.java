@@ -5,6 +5,7 @@ import com.intellij.openapi.ui.Messages;
 import com.ss.jme.plugin.JmeMessagesBundle;
 import com.ss.jme.plugin.JmePluginComponent;
 import com.ss.jme.plugin.JmePluginState;
+import com.ss.rlib.util.FileUtils;
 import com.ss.rlib.util.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -57,7 +58,16 @@ public class JmePluginUtils {
      */
     public static boolean checkJmb(@NotNull final Path path) {
 
-        final ProcessBuilder builder = new ProcessBuilder(path.toString());
+        final ProcessBuilder builder;
+
+        if ("jar".equals(FileUtils.getExtension(path))) {
+            final Path folder = path.getParent();
+            builder = new ProcessBuilder("java", "-jar", path.toString());
+            builder.directory(folder.toFile());
+        } else {
+            builder = new ProcessBuilder(path.toString());
+        }
+
         builder.environment().put("Server.api.version", String.valueOf(JmeConstants.JMB_API_VERSION));
 
         final Process process;
@@ -66,9 +76,10 @@ public class JmePluginUtils {
         } catch (final IOException e) {
             LOG.warn(e);
             SwingUtilities.invokeLater(() -> {
-                final String message = JmeMessagesBundle.message("jme.instance.error.cantExecute.message", path.toString());
+                final String errorMessage = JmeMessagesBundle.message("jme.instance.error.cantExecute.message");
+                final String resultMessage = errorMessage.replace("%path%", path.toString());
                 final String title = JmeMessagesBundle.message("jme.instance.error.cantExecute.title");
-                Messages.showWarningDialog(message, title);
+                Messages.showWarningDialog(resultMessage, title);
             });
             return false;
         }
