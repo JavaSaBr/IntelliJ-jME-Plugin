@@ -1,5 +1,6 @@
 package com.ss.jme.plugin;
 
+import static org.jetbrains.jps.model.java.JavaResourceRootType.RESOURCE;
 import com.intellij.compiler.server.BuildManagerListener;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleComponent;
@@ -14,7 +15,6 @@ import com.ss.rlib.util.array.Array;
 import com.ss.rlib.util.array.ArrayCollectors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.jps.model.java.JavaResourceRootType;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,6 +28,9 @@ import java.util.UUID;
  * @author JavaSaBr
  */
 public class JmeModuleComponent implements ModuleComponent, BuildManagerListener {
+
+    @NotNull
+    public static final String FOLDER_ASSETS = "assets";
 
     /**
      * The module root manager.
@@ -106,8 +109,9 @@ public class JmeModuleComponent implements ModuleComponent, BuildManagerListener
             return path.substring(0, path.length() - 2);
         } else if (path.endsWith("!\\")) {
             return path.substring(0, path.length() - 2);
+        } else {
+            return path;
         }
-        return path;
     }
 
     /**
@@ -116,9 +120,10 @@ public class JmeModuleComponent implements ModuleComponent, BuildManagerListener
      * @return the asset folder of this module.
      */
     public @Nullable Path getAssetFolder() {
-        final VirtualFile assetsFolder = findAssetsFolder();
-        if (assetsFolder == null) return null;
-        return Paths.get(assetsFolder.getPath());
+        return findAssetsFolder()
+                .map(VirtualFile::getPath)
+                .map(Paths::get)
+                .orElse(null);
     }
 
     /**
@@ -127,11 +132,12 @@ public class JmeModuleComponent implements ModuleComponent, BuildManagerListener
      * @return the path to compilation output.
      */
     public @Nullable Path getCompileOutput() {
-        final CompilerModuleExtension extension = CompilerModuleExtension.getInstance(module);
-        if (extension == null) return null;
-        final VirtualFile outputPath = extension.getCompilerOutputPath();
-        if (outputPath == null) return null;
-        return Paths.get(outputPath.getParent().getPath());
+        return Optional.ofNullable(CompilerModuleExtension.getInstance(module))
+                .map(CompilerModuleExtension::getCompilerOutputPath)
+                .map(VirtualFile::getParent)
+                .map(VirtualFile::getPath)
+                .map(Paths::get)
+                .orElse(null);
     }
 
     /**
@@ -141,9 +147,11 @@ public class JmeModuleComponent implements ModuleComponent, BuildManagerListener
      */
     public @Nullable Path getAssetFolder(@NotNull final VirtualFile file) {
         final String path = file.getPath();
-        return rootManager.getSourceRoots(JavaResourceRootType.RESOURCE).stream()
+        return rootManager.getSourceRoots(RESOURCE).stream()
                 .filter(rootFile -> path.startsWith(rootFile.getPath()))
-                .findFirst().map(result -> Paths.get(result.getPath()))
+                .findFirst()
+                .map(VirtualFile::getPath)
+                .map(Paths::get)
                 .orElse(null);
     }
 
@@ -152,20 +160,19 @@ public class JmeModuleComponent implements ModuleComponent, BuildManagerListener
      *
      * @return the assets folder or null.
      */
-    private @Nullable VirtualFile findAssetsFolder() {
+    private @NotNull Optional<VirtualFile> findAssetsFolder() {
 
-        final Optional<VirtualFile> assetsFolder = rootManager.getSourceRoots(JavaResourceRootType.RESOURCE).stream()
-                .filter(file -> file.getName().endsWith("assets"))
+        final Optional<VirtualFile> assetsFolder = rootManager.getSourceRoots(RESOURCE).stream()
+                .filter(file -> file.getName().endsWith(FOLDER_ASSETS))
                 .findFirst();
 
         if (assetsFolder.isPresent()) {
-            return assetsFolder.get();
+            return assetsFolder;
         }
 
-        final Optional<VirtualFile> resourcesFolder = rootManager.getSourceRoots(JavaResourceRootType.RESOURCE).stream()
+        return rootManager.getSourceRoots(RESOURCE)
+                .stream()
                 .findFirst();
-
-        return resourcesFolder.orElse(null);
     }
 
     /**

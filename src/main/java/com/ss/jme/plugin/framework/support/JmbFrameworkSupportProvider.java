@@ -158,7 +158,7 @@ public class JmbFrameworkSupportProvider extends GradleFrameworkSupportProvider 
                         "}")
                 .addOther("tasks.run.dependsOn('preparePlugin')")
                 .addOther("task wrapper(type: Wrapper) {\n" +
-                        "    gradleVersion = '4.4'\n" +
+                        "    gradleVersion = '4.5.1'\n" +
                         "}");
 
         final Project project = module.getProject();

@@ -1,6 +1,5 @@
 package com.ss.jme.plugin.ui.settings;
 
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.Configurable;
@@ -33,9 +32,6 @@ import java.util.Optional;
  * @author JavaSaBr
  */
 public class JmeExternalSettingsPage implements Configurable, Configurable.NoScroll {
-
-    @NotNull
-    private static final Logger LOG = Logger.getInstance("#ccom.ss.jme.plugin.ui.settings.JmeExternalSettingsPage");
 
     /**
      * The settings panel.
@@ -94,7 +90,7 @@ public class JmeExternalSettingsPage implements Configurable, Configurable.NoScr
      * @return the file chooser descriptor.
      */
     public static @NotNull FileChooserDescriptor createJmbDescriptor() {
-        final FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor();
+        final FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor();
         descriptor.setTitle(JmeMessagesBundle.message("jme.settings.pathToJmb.file.chooser.title"));
         descriptor.setDescription(JmeMessagesBundle.message("jme.settings.pathToJmb.file.chooser.description"));
         return descriptor;
@@ -178,9 +174,10 @@ public class JmeExternalSettingsPage implements Configurable, Configurable.NoScr
 
             final Path path = Paths.get(jmbPath);
             if (!Files.exists(path)) {
-                final String message = JmeMessagesBundle.message("jme.settings.pathToJmb.fileNotExists.message", path.toString());
+                final String errorMessage = JmeMessagesBundle.message("jme.settings.pathToJmb.fileNotExists.message");
+                final String resultMessage = errorMessage.replace("%path%", path.toString());
                 final String title = JmeMessagesBundle.message("jme.settings.pathToJmb.fileNotExists.title");
-                Messages.showWarningDialog(message, title);
+                Messages.showWarningDialog(resultMessage, title);
                 return;
             }
 
