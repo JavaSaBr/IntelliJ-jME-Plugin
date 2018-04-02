@@ -1,20 +1,5 @@
-buildscript {
-    repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-        maven {
-            url 'http://dl.bintray.com/jetbrains/intellij-plugin-service'
-        }
-
-    }
-    dependencies {
-        classpath "gradle.plugin.org.jetbrains:gradle-intellij-plugin:0.1.10"
-    }
-}
-
 plugins {
-    id "org.jetbrains.intellij" version "0.1.10"
+    id "org.jetbrains.intellij" version "0.3.1"
 }
 
 apply plugin: 'idea'
@@ -36,13 +21,15 @@ targetCompatibility = 1.8
 repositories {
     mavenCentral()
     jcenter()
-    maven { url 'https://jitpack.io' }
+    maven {
+        url "https://dl.bintray.com/javasabr/maven"
+    }
 }
 
 dependencies {
-    compile 'com.github.JavaSaBr:RLib:6.8.0'
+    compile 'com.spaceshift:rlib:6.8.4-Final'
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.5.1'
+    gradleVersion = '4.6'
 }

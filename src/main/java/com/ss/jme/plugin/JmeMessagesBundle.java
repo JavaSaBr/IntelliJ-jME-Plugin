@@ -24,7 +24,10 @@ public class JmeMessagesBundle extends AbstractBundle {
      * @param params the params.
      * @return the message.
      */
-    public static @NotNull String message(@NotNull @PropertyKey(resourceBundle = "messages.jme") String key, @NotNull Object... params) {
+    public static @NotNull String message(
+            @NotNull @PropertyKey(resourceBundle = "messages.jme") String key,
+            @NotNull Object... params
+    ) {
         return INSTANCE.getMessage(key, params);
     }
 }

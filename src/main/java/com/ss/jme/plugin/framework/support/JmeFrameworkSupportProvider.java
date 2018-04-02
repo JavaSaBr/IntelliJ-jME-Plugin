@@ -85,13 +85,15 @@ public class JmeFrameworkSupportProvider extends GradleFrameworkSupportProvider 
     }
 
     @Override
-    public void addSupport(@NotNull final ProjectId projectId, @NotNull final Module module,
-                           @NotNull final ModifiableRootModel rootModel,
-                           @NotNull final ModifiableModelsProvider modifiableModelsProvider,
-                           @NotNull final BuildScriptDataBuilder buildScriptData) {
+    public void addSupport(
+            @NotNull final ProjectId projectId,
+            @NotNull final Module module,
+            @NotNull final ModifiableRootModel rootModel,
+            @NotNull final ModifiableModelsProvider modifiableModelsProvider,
+            @NotNull final BuildScriptDataBuilder buildScriptData
+    ) {
 
         buildScriptData
-
             .addRepositoriesDefinition("jcenter()")
             .addRepositoriesDefinition("mavenCentral()")
             .addRepositoriesDefinition("maven { url 'https://jitpack.io' }")
@@ -155,7 +157,7 @@ public class JmeFrameworkSupportProvider extends GradleFrameworkSupportProvider 
                 "    from configurations.runtime\n" +
                 "}\n\n" +
                 "task wrapper(type: Wrapper) {\n" +
-                "    gradleVersion = '4.5.1'\n" +
+                "    gradleVersion = '4.6'\n" +
                 "}");
 
         final Project project = module.getProject();

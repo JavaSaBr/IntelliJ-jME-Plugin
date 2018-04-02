@@ -48,13 +48,15 @@ public class JmbFrameworkSupportProvider extends GradleFrameworkSupportProvider 
     }
 
     @Override
-    public void addSupport(@NotNull final ProjectId projectId, @NotNull final Module module,
-                           @NotNull final ModifiableRootModel rootModel,
-                           @NotNull final ModifiableModelsProvider modifiableModelsProvider,
-                           @NotNull final BuildScriptDataBuilder buildScriptData) {
+    public void addSupport(
+            @NotNull final ProjectId projectId,
+            @NotNull final Module module,
+            @NotNull final ModifiableRootModel rootModel,
+            @NotNull final ModifiableModelsProvider modifiableModelsProvider,
+            @NotNull final BuildScriptDataBuilder buildScriptData
+    ) {
 
         buildScriptData
-
                 .addImport("import java.nio.file.Files")
                 .addImport("import java.nio.file.Paths")
 

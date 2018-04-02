@@ -113,7 +113,8 @@ public class JmbInstance extends Thread {
     public JmbInstance(@NotNull final Module module) {
         this.module = module;
         this.notificator = new Object();
-        this.clientNetwork = NetworkFactory.newDefaultAsyncClientNetwork(NETWORK_CONFIG, PACKET_REGISTRY, ConnectHandler.newDefault());
+        this.clientNetwork = NetworkFactory.newDefaultAsyncClientNetwork(
+                NETWORK_CONFIG, PACKET_REGISTRY, ConnectHandler.newDefault());
         start();
     }
 
