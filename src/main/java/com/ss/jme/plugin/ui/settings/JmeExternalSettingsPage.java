@@ -34,6 +34,18 @@ import java.util.Optional;
 public class JmeExternalSettingsPage implements Configurable, Configurable.NoScroll {
 
     /**
+     * Creates a file chooser descriptor to select an executable file of jMB.
+     *
+     * @return the file chooser descriptor.
+     */
+    public static @NotNull FileChooserDescriptor createJmbDescriptor() {
+        FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor();
+        descriptor.setTitle(JmeMessagesBundle.message("jme.settings.pathToJmb.file.chooser.title"));
+        descriptor.setDescription(JmeMessagesBundle.message("jme.settings.pathToJmb.file.chooser.description"));
+        return descriptor;
+    }
+
+    /**
      * The settings panel.
      */
     @Nullable
@@ -85,18 +97,6 @@ public class JmeExternalSettingsPage implements Configurable, Configurable.NoScr
     }
 
     /**
-     * Creates a file chooser descriptor to select an executable file of jMB.
-     *
-     * @return the file chooser descriptor.
-     */
-    public static @NotNull FileChooserDescriptor createJmbDescriptor() {
-        final FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor();
-        descriptor.setTitle(JmeMessagesBundle.message("jme.settings.pathToJmb.file.chooser.title"));
-        descriptor.setDescription(JmeMessagesBundle.message("jme.settings.pathToJmb.file.chooser.description"));
-        return descriptor;
-    }
-
-    /**
      * The UI panel to show settings control.
      */
     public static class JmeConfigurablePanel {
@@ -111,13 +111,13 @@ public class JmeExternalSettingsPage implements Configurable, Configurable.NoScr
             this.panel = new JBPanel<>(new BorderLayout());
             this.pathField = new TextFieldWithBrowseButton();
 
-            final FileChooserDescriptor descriptor = createJmbDescriptor();
+            FileChooserDescriptor descriptor = createJmbDescriptor();
             pathField.addBrowseFolderListener(descriptor.getTitle(), descriptor.getDescription(), null, descriptor);
 
-            final JBLabel label = new JBLabel(JmeMessagesBundle.message("jme.settings.label.pathToJmb"));
+            JBLabel label = new JBLabel(JmeMessagesBundle.message("jme.settings.label.pathToJmb"));
             label.setHorizontalAlignment(SwingConstants.LEFT);
 
-            final JPanel wrapper = new JBPanel<>(new GridBagLayout());
+            JPanel wrapper = new JBPanel<>(new GridBagLayout());
 
             GridBagConstraints constraints = new GridBagConstraints();
             constraints.fill = GridBagConstraints.HORIZONTAL;
@@ -146,7 +146,7 @@ public class JmeExternalSettingsPage implements Configurable, Configurable.NoScr
          */
         private void reset() {
 
-            final String jmbPath = JmePluginComponent.getInstance()
+            String jmbPath = JmePluginComponent.getInstance()
                     .getState()
                     .getJmbPath();
 
@@ -162,21 +162,21 @@ public class JmeExternalSettingsPage implements Configurable, Configurable.NoScr
          */
         private void apply() {
 
-            final JmePluginComponent component = JmePluginComponent.getInstance();
-            final JmePluginState state = component.getState();
+            JmePluginComponent component = JmePluginComponent.getInstance();
+            JmePluginState state = component.getState();
 
-            final String jmbPath = FileUtil.toSystemIndependentName(pathField.getText().trim());
+            String jmbPath = FileUtil.toSystemIndependentName(pathField.getText().trim());
 
             if (StringUtils.isEmpty(jmbPath)) {
                 state.setJmbPath("");
                 return;
             }
 
-            final Path path = Paths.get(jmbPath);
+            Path path = Paths.get(jmbPath);
             if (!Files.exists(path)) {
-                final String errorMessage = JmeMessagesBundle.message("jme.settings.pathToJmb.fileNotExists.message");
-                final String resultMessage = errorMessage.replace("%path%", path.toString());
-                final String title = JmeMessagesBundle.message("jme.settings.pathToJmb.fileNotExists.title");
+                String errorMessage = JmeMessagesBundle.message("jme.settings.pathToJmb.fileNotExists.message");
+                String resultMessage = errorMessage.replace("%path%", path.toString());
+                String title = JmeMessagesBundle.message("jme.settings.pathToJmb.fileNotExists.title");
                 Messages.showWarningDialog(resultMessage, title);
                 return;
             }
@@ -195,7 +195,7 @@ public class JmeExternalSettingsPage implements Configurable, Configurable.NoScr
          */
         private boolean isModified() {
 
-            final String jmbPath = JmePluginComponent.getInstance()
+            String jmbPath = JmePluginComponent.getInstance()
                     .getState()
                     .getJmbPath();
 

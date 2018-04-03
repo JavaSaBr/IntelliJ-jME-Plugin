@@ -7,7 +7,7 @@ apply plugin: 'org.jetbrains.intellij'
 apply plugin: 'java'
 
 intellij {
-    version '2017.3'
+    version '2018.1'
     plugins = ['coverage', 'gradle']
     pluginName 'IntelliJ-jME-Plugin'
 }

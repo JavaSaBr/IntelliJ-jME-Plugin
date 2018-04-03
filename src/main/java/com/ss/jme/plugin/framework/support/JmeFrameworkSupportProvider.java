@@ -1,7 +1,8 @@
 package com.ss.jme.plugin.framework.support;
 
+import static com.ss.jme.plugin.util.JmePluginUtils.getOrCreateFile;
+import static com.ss.jme.plugin.util.JmePluginUtils.getOrCreateFolders;
 import com.intellij.framework.FrameworkTypeEx;
-import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.externalSystem.model.project.ProjectId;
@@ -86,17 +87,17 @@ public class JmeFrameworkSupportProvider extends GradleFrameworkSupportProvider 
 
     @Override
     public void addSupport(
-            @NotNull final ProjectId projectId,
-            @NotNull final Module module,
-            @NotNull final ModifiableRootModel rootModel,
-            @NotNull final ModifiableModelsProvider modifiableModelsProvider,
-            @NotNull final BuildScriptDataBuilder buildScriptData
+            @NotNull ProjectId projectId,
+            @NotNull Module module,
+            @NotNull ModifiableRootModel rootModel,
+            @NotNull ModifiableModelsProvider modifiableModelsProvider,
+            @NotNull BuildScriptDataBuilder buildScriptData
     ) {
 
         buildScriptData
             .addRepositoriesDefinition("jcenter()")
             .addRepositoriesDefinition("mavenCentral()")
-            .addRepositoriesDefinition("maven { url 'https://jitpack.io' }")
+            .addRepositoriesDefinition("maven { url \"https://jitpack.io\" }")
             .addRepositoriesDefinition("maven { url \"https://dl.bintray.com/stephengold/jme3utilities\" }")
             .addRepositoriesDefinition("maven { url \"http://dl.bintray.com/jmonkeyengine/org.jmonkeyengine\" }")
 
@@ -160,11 +161,11 @@ public class JmeFrameworkSupportProvider extends GradleFrameworkSupportProvider 
                 "    gradleVersion = '4.6'\n" +
                 "}");
 
-        final Project project = module.getProject();
-        final VirtualFile baseDir = project.getBaseDir();
+        Project project = module.getProject();
+        VirtualFile baseDir = project.getBaseDir();
 
-        final Application application = ApplicationManager.getApplication();
-        application.runWriteAction(() -> createAdditionalFiles(baseDir));
+        ApplicationManager.getApplication()
+                .runWriteAction(() -> createAdditionalFiles(baseDir));
     }
 
     /**
@@ -172,53 +173,56 @@ public class JmeFrameworkSupportProvider extends GradleFrameworkSupportProvider 
      *
      * @param baseDir the base dir of the project.
      */
-    private void createAdditionalFiles(@NotNull final VirtualFile baseDir) {
+    private void createAdditionalFiles(@NotNull VirtualFile baseDir) {
         try {
 
             // creates the native build script
-            final VirtualFile nativeBuildFile = baseDir.createChildData(this, "build-native.xml");
+            VirtualFile nativeBuildFile = getOrCreateFile(baseDir,this, "build-native.xml");
+
             VfsUtil.saveText(nativeBuildFile, NATIVE_BUILD_SCRIPT);
 
             // creates example classes
-            final VirtualFile mainDir = baseDir.createChildDirectory(this, "src")
-                .createChildDirectory(this, "main");
+            VirtualFile mainDir = getOrCreateFolders(baseDir,this,
+                    "src", "main");
 
-            final VirtualFile assetsDir = mainDir.createChildDirectory(this, "assets");
-            assetsDir.createChildDirectory(this, "Models");
-            assetsDir.createChildDirectory(this, "Sounds");
-            assetsDir.createChildDirectory(this, "Interface");
-            assetsDir.createChildDirectory(this, "MatDefs");
-            assetsDir.createChildDirectory(this, "Materials");
-            assetsDir.createChildDirectory(this, "Shaders");
+            VirtualFile assetsDir = getOrCreateFolders(mainDir, this, "assets");
 
-            final VirtualFile texturesDir = assetsDir.createChildDirectory(this, "Textures");
-            final VirtualFile logoImageFile = texturesDir.createChildData(this, "jme-logo.png");
-            logoImageFile.setBinaryContent(LOGO_IMAGE);
+            getOrCreateFolders(assetsDir, this, "Models");
+            getOrCreateFolders(assetsDir, this, "Sounds");
+            getOrCreateFolders(assetsDir, this, "Interface");
+            getOrCreateFolders(assetsDir, this, "MatDefs");
+            getOrCreateFolders(assetsDir, this, "Materials");
+            getOrCreateFolders(assetsDir, this, "Shaders");
 
-            final VirtualFile terrainAlphaDir = texturesDir.createChildDirectory(this, "TerrainAlpha");
+            VirtualFile texturesDir = getOrCreateFolders(assetsDir, this, "Textures");
 
-            terrainAlphaDir.createChildData(this, "terrain-alpha-blend-1.png")
-                .setBinaryContent(TERRAIN_ALPHA_1);
-            terrainAlphaDir.createChildData(this, "terrain-alpha-blend-2.png")
-                .setBinaryContent(TERRAIN_ALPHA_2);
-            terrainAlphaDir.createChildData(this, "terrain-alpha-blend-3.png")
-                .setBinaryContent(TERRAIN_ALPHA_3);
+            getOrCreateFile(texturesDir, this, "jme-logo.png")
+                    .setBinaryContent(LOGO_IMAGE);
 
-            final VirtualFile terrainDir = texturesDir.createChildDirectory(this, "Terrain");
-            terrainDir.createChildData(this, "ground03.tga")
-                .setBinaryContent(TERRAIN);
+            VirtualFile terrainAlphaDir = getOrCreateFolders(texturesDir, this, "TerrainAlpha");
 
-            final VirtualFile scenesDir = assetsDir.createChildDirectory(this, "Scenes");
-            scenesDir.createChildData(this, "SimpleScene.j3s")
-                .setBinaryContent(SIMPLE_SCENE);
+            getOrCreateFile(terrainAlphaDir, this, "terrain-alpha-blend-1.png")
+                    .setBinaryContent(TERRAIN_ALPHA_1);
+            getOrCreateFile(terrainAlphaDir, this, "terrain-alpha-blend-2.png")
+                    .setBinaryContent(TERRAIN_ALPHA_2);
+            getOrCreateFile(terrainAlphaDir, this, "terrain-alpha-blend-3.png")
+                    .setBinaryContent(TERRAIN_ALPHA_3);
 
-            final VirtualFile exampleDir = mainDir.createChildDirectory(this, "java")
-                .createChildDirectory(this, "com")
-                .createChildDirectory(this, "jme")
-                .createChildDirectory(this, "example");
+            VirtualFile terrainDir = getOrCreateFolders(texturesDir, this, "Terrain");
 
-            final VirtualFile gameApplicationFile = exampleDir.createChildData(this, "GameApplication.java");
-            final VirtualFile starterFile = exampleDir.createChildData(this, "Starter.java");
+            getOrCreateFile(terrainDir, this, "ground03.tga")
+                    .setBinaryContent(TERRAIN);
+
+            VirtualFile scenesDir = getOrCreateFolders(assetsDir, this, "Scenes");
+
+            getOrCreateFile(scenesDir, this, "SimpleScene.j3s")
+                    .setBinaryContent(SIMPLE_SCENE);
+
+            VirtualFile exampleDir = getOrCreateFolders(mainDir, this,
+                    "java", "com", "jme", "example");
+
+            VirtualFile gameApplicationFile = getOrCreateFile(exampleDir, this, "GameApplication.java");
+            VirtualFile starterFile = getOrCreateFile(exampleDir, this, "Starter.java");
 
             VfsUtil.saveText(gameApplicationFile, GAME_APPLICATION);
             VfsUtil.saveText(starterFile, STARTER);

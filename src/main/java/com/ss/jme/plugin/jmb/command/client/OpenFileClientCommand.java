@@ -26,13 +26,13 @@ public class OpenFileClientCommand extends ClientCommand {
     @NotNull
     private final String file;
 
-    public OpenFileClientCommand(@NotNull final Path assetFolder, @NotNull final Path file) {
+    public OpenFileClientCommand(@NotNull Path assetFolder, @NotNull Path file) {
         this.assetFolder = assetFolder.toString();
         this.file = file.toString();
     }
 
     @Override
-    protected void writeImpl(@NotNull final ByteBuffer buffer) {
+    protected void writeImpl(@NotNull ByteBuffer buffer) {
         super.writeImpl(buffer);
         writeString(buffer, assetFolder);
         writeString(buffer, file);

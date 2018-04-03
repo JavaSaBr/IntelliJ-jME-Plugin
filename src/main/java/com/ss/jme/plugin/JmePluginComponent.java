@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author JavaSaBr
  */
-@State(name = "JmePluginComponent", storages = @Storage(id = "JmePluginComponent", file = StoragePathMacros.APP_CONFIG +
+@State(name = "JmePluginComponent", storages = @Storage(value = "JmePluginComponent", file = StoragePathMacros.APP_CONFIG +
         "/jme.plugin.xml", scheme = StorageScheme.DIRECTORY_BASED))
 public class JmePluginComponent implements ApplicationComponent, PersistentStateComponent<JmePluginState> {
 
@@ -41,7 +41,7 @@ public class JmePluginComponent implements ApplicationComponent, PersistentState
     }
 
     @Override
-    public void loadState(@Nullable final JmePluginState state) {
+    public void loadState(@Nullable JmePluginState state) {
         this.state.copyOf(state);
     }
 }

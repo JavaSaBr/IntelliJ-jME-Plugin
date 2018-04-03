@@ -18,7 +18,7 @@ public class JmbFrameworkTypeEx extends FrameworkTypeEx {
     @NotNull
     private final JmbFrameworkSupportProvider provider;
 
-    public JmbFrameworkTypeEx(@NotNull final String id, @NotNull final JmbFrameworkSupportProvider provider) {
+    public JmbFrameworkTypeEx(@NotNull String id, @NotNull JmbFrameworkSupportProvider provider) {
         super(id);
         this.provider = provider;
     }

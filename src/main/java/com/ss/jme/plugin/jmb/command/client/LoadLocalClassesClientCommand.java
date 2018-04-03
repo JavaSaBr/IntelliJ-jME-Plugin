@@ -21,12 +21,12 @@ public class LoadLocalClassesClientCommand extends ClientCommand {
     @Nullable
     private final Path output;
 
-    public LoadLocalClassesClientCommand(@Nullable final Path output) {
+    public LoadLocalClassesClientCommand(@Nullable Path output) {
         this.output = output;
     }
 
     @Override
-    protected void writeImpl(@NotNull final ByteBuffer buffer) {
+    protected void writeImpl(@NotNull ByteBuffer buffer) {
         super.writeImpl(buffer);
         writeString(buffer, output == null ? "" : output.toString());
     }

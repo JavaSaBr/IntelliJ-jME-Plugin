@@ -56,7 +56,7 @@ public class JmeModuleComponent implements ModuleComponent, BuildManagerListener
     @NotNull
     private final JmeExternalSystemTaskNotificationListener notificationListener;
 
-    private JmeModuleComponent(@NotNull final Module module) {
+    private JmeModuleComponent(@NotNull Module module) {
         this.module = module;
         this.rootManager = ModuleRootManager.getInstance(module);
         this.jmbInstance = new JmbInstance(module);
@@ -70,7 +70,7 @@ public class JmeModuleComponent implements ModuleComponent, BuildManagerListener
     }
 
     @Override
-    public void buildFinished(@NotNull final Project project, @NotNull final UUID sessionId, final boolean isAutomake) {
+    public void buildFinished(@NotNull Project project, @NotNull UUID sessionId, boolean isAutomake) {
         jmbInstance.sendCommandIfRunning(new LoadLocalClassesClientCommand(getCompileOutput()));
     }
 
@@ -104,7 +104,7 @@ public class JmeModuleComponent implements ModuleComponent, BuildManagerListener
      * @param path the library path
      * @return the prepared library path
      */
-    private @NotNull String prepareLibraryPath(@NotNull final String path) {
+    private @NotNull String prepareLibraryPath(@NotNull String path) {
         if (path.endsWith("!/")) {
             return path.substring(0, path.length() - 2);
         } else if (path.endsWith("!\\")) {
@@ -145,8 +145,8 @@ public class JmeModuleComponent implements ModuleComponent, BuildManagerListener
      *
      * @return the asset folder of this module.
      */
-    public @Nullable Path getAssetFolder(@NotNull final VirtualFile file) {
-        final String path = file.getPath();
+    public @Nullable Path getAssetFolder(@NotNull VirtualFile file) {
+        String path = file.getPath();
         return rootManager.getSourceRoots(RESOURCE).stream()
                 .filter(rootFile -> path.startsWith(rootFile.getPath()))
                 .findFirst()
@@ -162,7 +162,7 @@ public class JmeModuleComponent implements ModuleComponent, BuildManagerListener
      */
     private @NotNull Optional<VirtualFile> findAssetsFolder() {
 
-        final Optional<VirtualFile> assetsFolder = rootManager.getSourceRoots(RESOURCE).stream()
+        Optional<VirtualFile> assetsFolder = rootManager.getSourceRoots(RESOURCE).stream()
                 .filter(file -> file.getName().endsWith(FOLDER_ASSETS))
                 .findFirst();
 
@@ -180,7 +180,7 @@ public class JmeModuleComponent implements ModuleComponent, BuildManagerListener
      *
      * @param command the command.
      */
-    public void sendCommand(@NotNull final ClientCommand command) {
+    public void sendCommand(@NotNull ClientCommand command) {
         jmbInstance.sendCommand(command, module.getProject());
     }
 

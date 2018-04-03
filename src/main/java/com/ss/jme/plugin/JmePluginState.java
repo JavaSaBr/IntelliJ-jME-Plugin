@@ -22,7 +22,7 @@ public class JmePluginState {
         this.jmbPath = DEFAULT_JMB_PATH;
     }
 
-    public void copyOf(@Nullable final JmePluginState other) {
+    public void copyOf(@Nullable JmePluginState other) {
         if (other == null) {
             this.jmbPath = DEFAULT_JMB_PATH;
         } else {
@@ -34,15 +34,15 @@ public class JmePluginState {
         return jmbPath;
     }
 
-    public void setJmbPath(@Nullable final String jmbPath) {
+    public void setJmbPath(@Nullable String jmbPath) {
         this.jmbPath = jmbPath == null? DEFAULT_JMB_PATH : jmbPath;
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final JmePluginState that = (JmePluginState) o;
+        JmePluginState that = (JmePluginState) o;
         return getJmbPath().equals(that.getJmbPath());
     }
 

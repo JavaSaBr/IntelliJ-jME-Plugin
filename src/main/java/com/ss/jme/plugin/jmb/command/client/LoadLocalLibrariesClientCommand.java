@@ -21,12 +21,12 @@ public class LoadLocalLibrariesClientCommand extends ClientCommand {
     @NotNull
     private final Array<Path> libraries;
 
-    public LoadLocalLibrariesClientCommand(@NotNull final Array<Path> libraries) {
+    public LoadLocalLibrariesClientCommand(@NotNull Array<Path> libraries) {
         this.libraries = libraries;
     }
 
     @Override
-    protected void writeImpl(@NotNull final ByteBuffer buffer) {
+    protected void writeImpl(@NotNull ByteBuffer buffer) {
         super.writeImpl(buffer);
         writeInt(buffer, libraries.size());
         libraries.forEach(library -> writeString(buffer, library.toString()));

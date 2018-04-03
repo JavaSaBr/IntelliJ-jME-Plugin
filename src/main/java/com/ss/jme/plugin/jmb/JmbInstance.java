@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -110,7 +111,7 @@ public class JmbInstance extends Thread {
      */
     private volatile boolean wasFailed;
 
-    public JmbInstance(@NotNull final Module module) {
+    public JmbInstance(@NotNull Module module) {
         this.module = module;
         this.notificator = new Object();
         this.clientNetwork = NetworkFactory.newDefaultAsyncClientNetwork(
@@ -138,7 +139,7 @@ public class JmbInstance extends Thread {
             LOG.debug("Started waiting for finishing of the process: ", process);
             try {
                 process.waitFor();
-            } catch (final InterruptedException e) {
+            } catch (InterruptedException e) {
                 LOG.warn(e);
             }
 
@@ -153,7 +154,7 @@ public class JmbInstance extends Thread {
      *
      * @param lastJmbPath the last path to jMB.
      */
-    private void setLastJmbPath(@Nullable final Path lastJmbPath) {
+    private void setLastJmbPath(@Nullable Path lastJmbPath) {
         this.lastJmbPath = lastJmbPath;
     }
 
@@ -171,16 +172,16 @@ public class JmbInstance extends Thread {
      *
      * @param project the project which request starting an instance.
      */
-    private void startInstance(@NotNull final Project project) {
+    private void startInstance(@NotNull Project project) {
 
         if (ready) {
             return;
         }
 
-        final String title = JmeMessagesBundle.message("jmb.instance.launch.title");
+        String title = JmeMessagesBundle.message("jmb.instance.launch.title");
         ProgressManager.getInstance().run(new Task.Modal(project, title, false) {
             @Override
-            public void run(@NotNull final ProgressIndicator indicator) {
+            public void run(@NotNull ProgressIndicator indicator) {
                 indicator.setIndeterminate(true);
                 startInstanceImpl();
             }
@@ -196,11 +197,11 @@ public class JmbInstance extends Thread {
             return;
         }
 
-        final Path pathToJmb = JmePluginUtils.getPathToJmb();
+        Path pathToJmb = JmePluginUtils.getPathToJmb();
         if (wasFailed && pathToJmb != null && pathToJmb.equals(getLastJmbPath())) {
             SwingUtilities.invokeLater(() -> {
-                final String message = JmeMessagesBundle.message("jme.instance.error.wasFailed.message");
-                final String title = JmeMessagesBundle.message("jme.instance.error.wasFailed.title");
+                String message = JmeMessagesBundle.message("jme.instance.error.wasFailed.message");
+                String title = JmeMessagesBundle.message("jme.instance.error.wasFailed.title");
                 Messages.showWarningDialog(message, title);
             });
             return;
@@ -210,8 +211,8 @@ public class JmbInstance extends Thread {
 
         if (pathToJmb == null) {
             SwingUtilities.invokeLater(() -> {
-                final String message = JmeMessagesBundle.message("jme.instance.error.noPath.message");
-                final String title = JmeMessagesBundle.message("jme.instance.error.noPath.title");
+                String message = JmeMessagesBundle.message("jme.instance.error.noPath.message");
+                String title = JmeMessagesBundle.message("jme.instance.error.noPath.title");
                 Messages.showWarningDialog(message, title);
             });
             wasFailed = true;
@@ -224,26 +225,26 @@ public class JmbInstance extends Thread {
 
         LOG.debug("starting a new jMB instance...");
 
-        final int freePort = Utils.getFreePort(5000);
+        int freePort = Utils.getFreePort(5000);
 
         LOG.debug("free port: ", freePort);
 
-        final JmeModuleComponent moduleComponent = module.getComponent(JmeModuleComponent.class);
-        final Path assetFolder = moduleComponent.getAssetFolder();
+        JmeModuleComponent moduleComponent = module.getComponent(JmeModuleComponent.class);
+        Path assetFolder = moduleComponent.getAssetFolder();
 
         LOG.debug("asset folder: ", assetFolder);
 
-        final ProcessBuilder builder;
+        ProcessBuilder builder;
 
         if ("jar".equals(FileUtils.getExtension(pathToJmb))) {
-            final Path folder = pathToJmb.getParent();
+            Path folder = pathToJmb.getParent();
             builder = new ProcessBuilder("java", "-jar", pathToJmb.toString());
             builder.directory(folder.toFile());
         } else {
             builder = new ProcessBuilder(pathToJmb.toString());
         }
 
-        final Map<String, String> env = builder.environment();
+        Map<String, String> env = builder.environment();
         env.put("Server.api.port", String.valueOf(freePort));
 
         if (assetFolder != null) {
@@ -256,14 +257,14 @@ public class JmbInstance extends Thread {
         LOG.debug("commands: ", builder.command());
         LOG.debug("env: ", env);
 
-        final Process process;
+        Process process;
         try {
             process = builder.start();
-        } catch (final IOException e) {
+        } catch (IOException e) {
             LOG.warn(e);
             SwingUtilities.invokeLater(() -> {
-                final String message = JmeMessagesBundle.message("jme.instance.error.cantExecute.message", pathToJmb.toString());
-                final String title = JmeMessagesBundle.message("jme.instance.error.cantExecute.title");
+                String message = JmeMessagesBundle.message("jme.instance.error.cantExecute.message", pathToJmb.toString());
+                String title = JmeMessagesBundle.message("jme.instance.error.cantExecute.title");
                 Messages.showWarningDialog(message, title);
             });
             wasFailed = true;
@@ -287,7 +288,7 @@ public class JmbInstance extends Thread {
                 server.sendPacket(new InitClasspathClientCommand(moduleComponent.getCompileOutput(), moduleComponent.getLibraries()));
                 setServer(server);
                 break;
-            } catch (final RuntimeException e) {
+            } catch (RuntimeException e) {
                 LOG.warn(e);
                 LOG.debug("Waiting for 1 sec.");
                 ThreadUtils.sleep(1000);
@@ -317,11 +318,20 @@ public class JmbInstance extends Thread {
     }
 
     /**
+     * Get the server of jMB.
+     *
+     * @return the server of jMB.
+     */
+    private @NotNull Optional<Server> getServerOpt() {
+        return Optional.ofNullable(server);
+    }
+
+    /**
      * Set the server of jMB.
      *
      * @param server the server of jMB.
      */
-    private void setServer(@Nullable final Server server) {
+    private void setServer(@Nullable Server server) {
         this.server = server;
     }
 
@@ -331,13 +341,10 @@ public class JmbInstance extends Thread {
      * @param command the command.
      * @param project the project.
      */
-    public void sendCommand(@NotNull final ClientCommand command, @NotNull final Project project) {
+    public void sendCommand(@NotNull ClientCommand command, @NotNull Project project) {
         EXECUTOR_SERVICE.execute(() -> {
             startInstance(project);
-            final Server server = getServer();
-            if (server != null) {
-                server.sendPacket(command);
-            }
+            getServerOpt().ifPresent(it -> it.sendPacket(command));
         });
     }
 
@@ -346,13 +353,9 @@ public class JmbInstance extends Thread {
      *
      * @param command the command.
      */
-    public void sendCommandIfRunning(@NotNull final ClientCommand command) {
+    public void sendCommandIfRunning(@NotNull ClientCommand command) {
         if (!ready) return;
-        EXECUTOR_SERVICE.execute(() -> {
-            final Server server = getServer();
-            if (server != null) {
-                server.sendPacket(command);
-            }
-        });
+        EXECUTOR_SERVICE.execute(() ->
+                getServerOpt().ifPresent(it -> it.sendPacket(command)));
     }
 }
