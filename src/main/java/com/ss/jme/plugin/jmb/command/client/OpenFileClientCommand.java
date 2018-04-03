@@ -21,7 +21,7 @@ public class OpenFileClientCommand extends ClientCommand {
     private final String assetFolder;
 
     /**
-     * THe file to open.
+     * The file to open.
      */
     @NotNull
     private final String file;

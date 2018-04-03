@@ -1,10 +1,12 @@
 plugins {
     id "org.jetbrains.intellij" version "0.3.1"
+    id 'net.ltgt.apt' version '0.15'
 }
 
 apply plugin: 'idea'
 apply plugin: 'org.jetbrains.intellij'
 apply plugin: 'java'
+apply plugin: "net.ltgt.apt"
 
 intellij {
     version '2018.1'
@@ -28,6 +30,7 @@ repositories {
 
 dependencies {
     compile 'com.spaceshift:rlib:6.8.4-Final'
+    compileOnly 'org.projectlombok:lombok:1.16.20'
 }
 
 task wrapper(type: Wrapper) {

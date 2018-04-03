@@ -1,6 +1,8 @@
 package com.ss.jme.plugin;
 
 import com.intellij.util.xmlb.annotations.Property;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -9,6 +11,8 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author JavaSaBr
  */
+@Getter
+@EqualsAndHashCode
 public class JmePluginState {
 
     @NotNull
@@ -18,11 +22,16 @@ public class JmePluginState {
     @Property
     private String jmbPath;
 
-    public JmePluginState() {
+    JmePluginState() {
         this.jmbPath = DEFAULT_JMB_PATH;
     }
 
-    public void copyOf(@Nullable JmePluginState other) {
+    /**
+     * Copies state from the instance.
+     *
+     * @param other the other state instance.
+     */
+    void copyOf(@Nullable JmePluginState other) {
         if (other == null) {
             this.jmbPath = DEFAULT_JMB_PATH;
         } else {
@@ -30,24 +39,12 @@ public class JmePluginState {
         }
     }
 
-    public @NotNull String getJmbPath() {
-        return jmbPath;
-    }
-
+    /**
+     * Sets the path to jMB.
+     *
+     * @param jmbPath the path to jMB.
+     */
     public void setJmbPath(@Nullable String jmbPath) {
-        this.jmbPath = jmbPath == null? DEFAULT_JMB_PATH : jmbPath;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        JmePluginState that = (JmePluginState) o;
-        return getJmbPath().equals(that.getJmbPath());
-    }
-
-    @Override
-    public int hashCode() {
-        return getJmbPath().hashCode();
+        this.jmbPath = jmbPath == null ? DEFAULT_JMB_PATH : jmbPath;
     }
 }

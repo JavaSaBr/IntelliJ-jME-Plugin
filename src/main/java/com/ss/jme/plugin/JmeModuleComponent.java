@@ -75,14 +75,14 @@ public class JmeModuleComponent implements ModuleComponent, BuildManagerListener
     }
 
     /**
-     * Notify about the module's project was resolved.
+     * Notifies about the module's project was resolved.
      */
     public void onProjectResolved() {
         jmbInstance.sendCommandIfRunning(new LoadLocalLibrariesClientCommand(getLibraries()));
     }
 
     /**
-     * Get all libraries of this module.
+     * Gets all libraries of this module.
      *
      * @return the list of libraries.
      */
@@ -99,7 +99,7 @@ public class JmeModuleComponent implements ModuleComponent, BuildManagerListener
     }
 
     /**
-     * Prepare the library path.
+     * Prepares the library path.
      *
      * @param path the library path
      * @return the prepared library path
@@ -115,7 +115,7 @@ public class JmeModuleComponent implements ModuleComponent, BuildManagerListener
     }
 
     /**
-     * Get an asset folder of this module.
+     * Gets an asset folder of this module.
      *
      * @return the asset folder of this module.
      */
@@ -127,7 +127,7 @@ public class JmeModuleComponent implements ModuleComponent, BuildManagerListener
     }
 
     /**
-     * Get the path to compilation output.
+     * Gets the path to compilation output.
      *
      * @return the path to compilation output.
      */
@@ -141,7 +141,7 @@ public class JmeModuleComponent implements ModuleComponent, BuildManagerListener
     }
 
     /**
-     * Get an asset folder of this module.
+     * Gets an asset folder of this module.
      *
      * @return the asset folder of this module.
      */
@@ -176,7 +176,7 @@ public class JmeModuleComponent implements ModuleComponent, BuildManagerListener
     }
 
     /**
-     * Send the command to jMB.
+     * Sends the command to jMB.
      *
      * @param command the command.
      */

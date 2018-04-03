@@ -71,7 +71,7 @@ public class JmeFrameworkSupportProvider extends GradleFrameworkSupportProvider 
             TERRAIN_ALPHA_2 = IOUtils.toByteArray(classLoader.getResourceAsStream(TERRAIN_ALPHA_2_PATH));
             LOG.debug("read " + TERRAIN_ALPHA_3_PATH);
             TERRAIN_ALPHA_3 = IOUtils.toByteArray(classLoader.getResourceAsStream(TERRAIN_ALPHA_3_PATH));
-        } catch (final IOException e) {
+        } catch (IOException e) {
             LOG.error(e);
             throw new RuntimeException(e);
         }
@@ -227,7 +227,7 @@ public class JmeFrameworkSupportProvider extends GradleFrameworkSupportProvider 
             VfsUtil.saveText(gameApplicationFile, GAME_APPLICATION);
             VfsUtil.saveText(starterFile, STARTER);
 
-        } catch (final IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }

@@ -23,6 +23,9 @@ import com.ss.rlib.network.client.server.Server;
 import com.ss.rlib.network.packet.ReadablePacketRegistry;
 import com.ss.rlib.util.FileUtils;
 import com.ss.rlib.util.Utils;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -93,12 +96,16 @@ public class JmbInstance extends Thread {
      * The server of jMB.
      */
     @Nullable
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private volatile Server server;
 
     /**
      * The last used path to jMB.
      */
     @Nullable
+    @Getter(AccessLevel.PRIVATE)
+    @Setter(AccessLevel.PRIVATE)
     private volatile Path lastJmbPath;
 
     /**
@@ -150,25 +157,7 @@ public class JmbInstance extends Thread {
     }
 
     /**
-     * Set the last path to jMB.
-     *
-     * @param lastJmbPath the last path to jMB.
-     */
-    private void setLastJmbPath(@Nullable Path lastJmbPath) {
-        this.lastJmbPath = lastJmbPath;
-    }
-
-    /**
-     * Get the last path to jMB.
-     *
-     * @return the last path to jMB.
-     */
-    private @Nullable Path getLastJmbPath() {
-        return lastJmbPath;
-    }
-
-    /**
-     * Start an instance of jMB.
+     * Starts an instance of jMB.
      *
      * @param project the project which request starting an instance.
      */
@@ -189,7 +178,7 @@ public class JmbInstance extends Thread {
     }
 
     /**
-     * Execute starting jMB.
+     * Executes starting jMB.
      */
     private synchronized void startInstanceImpl() {
 
@@ -309,16 +298,7 @@ public class JmbInstance extends Thread {
     }
 
     /**
-     * Get the server of jMB.
-     *
-     * @return the server of jMB.
-     */
-    private @Nullable Server getServer() {
-        return server;
-    }
-
-    /**
-     * Get the server of jMB.
+     * Gets the server of jMB.
      *
      * @return the server of jMB.
      */
@@ -327,16 +307,7 @@ public class JmbInstance extends Thread {
     }
 
     /**
-     * Set the server of jMB.
-     *
-     * @param server the server of jMB.
-     */
-    private void setServer(@Nullable Server server) {
-        this.server = server;
-    }
-
-    /**
-     * Send the command to jMB.
+     * Sends the command to jMB.
      *
      * @param command the command.
      * @param project the project.
@@ -349,7 +320,7 @@ public class JmbInstance extends Thread {
     }
 
     /**
-     * Send the command to jMB if we already have running instance.
+     * Sends the command to jMB if we already have running instance.
      *
      * @param command the command.
      */

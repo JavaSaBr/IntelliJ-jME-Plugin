@@ -47,7 +47,7 @@ public class OpenInJmbAction extends AnAction {
     }
 
     /**
-     * Get an asset folder of the filer.
+     * Gets an asset folder of the filer.
      *
      * @param file    the file.
      * @param project the project.

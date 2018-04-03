@@ -158,7 +158,7 @@ public class JmeExternalSettingsPage implements Configurable, Configurable.NoScr
         }
 
         /**
-         * Apply settings.
+         * Applies settings.
          */
         private void apply() {
 

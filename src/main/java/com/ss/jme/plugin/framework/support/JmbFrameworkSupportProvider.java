@@ -206,7 +206,7 @@ public class JmbFrameworkSupportProvider extends GradleFrameworkSupportProvider 
 
             VfsUtil.saveText(pluginMessagesClass, PLUGIN_MESSAGES_CLASS);
 
-        } catch (final IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }

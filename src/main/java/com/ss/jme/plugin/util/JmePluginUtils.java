@@ -31,7 +31,7 @@ public class JmePluginUtils {
     private static final Logger LOG = Logger.getInstance("#com.ss.jme.plugin.util.JmePluginUtils");
 
     /**
-     * Get or create folders by the names start from the parent folder.
+     * Gets or creates folders by the names start from the parent folder.
      *
      * @param parent    the parent folder.
      * @param requester the requester.
@@ -44,7 +44,7 @@ public class JmePluginUtils {
             @NotNull final String... names
     ) {
 
-        final String name = names[0];
+        String name = names[0];
 
         VirtualFile resultFolder = parent.findChild(name);
 
@@ -60,18 +60,17 @@ public class JmePluginUtils {
     }
 
     /**
-     * Get or create a file by the names start from the parent folder.
+     * Gets or creates a file by the names start from the parent folder.
      *
      * @param parent    the parent folder.
      * @param requester the requester.
      * @param name      the file's names
      * @return the created file.
      */
-    public static @NotNull
-    VirtualFile getOrCreateFile(
-            @NotNull final VirtualFile parent,
-            @NotNull final Object requester,
-            @NotNull final String name
+    public static @NotNull VirtualFile getOrCreateFile(
+            @NotNull VirtualFile parent,
+            @NotNull Object requester,
+            @NotNull String name
     ) {
 
         VirtualFile resultFile = parent.findChild(name);
@@ -90,15 +89,15 @@ public class JmePluginUtils {
      */
     public static @Nullable Path getPathToJmb() {
 
-        final JmePluginComponent pluginComponent = JmePluginComponent.getInstance();
-        final JmePluginState state = pluginComponent.getState();
-        final String jmbPath = state.getJmbPath();
+        JmePluginComponent pluginComponent = JmePluginComponent.getInstance();
+        JmePluginState state = pluginComponent.getState();
+        String jmbPath = state.getJmbPath();
 
         if (StringUtils.isEmpty(jmbPath)) {
             return null;
         }
 
-        final Path path = Paths.get(jmbPath);
+        Path path = Paths.get(jmbPath);
         if (!Files.exists(path)) {
             return null;
         }
@@ -112,9 +111,9 @@ public class JmePluginUtils {
      * @param path the path to jMB.
      * @return true if we can work with this jMB.
      */
-    public static boolean checkJmb(@NotNull final Path path) {
+    public static boolean checkJmb(@NotNull Path path) {
 
-        final ProcessBuilder builder;
+        ProcessBuilder builder;
 
         if ("jar".equals(FileUtils.getExtension(path))) {
             final Path folder = path.getParent();
@@ -127,15 +126,15 @@ public class JmePluginUtils {
         builder.environment()
                 .put("Server.api.version", String.valueOf(JmeConstants.JMB_API_VERSION));
 
-        final Process process;
+        Process process;
         try {
             process = builder.start();
-        } catch (final IOException e) {
+        } catch (IOException e) {
             LOG.warn(e);
             SwingUtilities.invokeLater(() -> {
-                final String errorMessage = JmeMessagesBundle.message("jme.instance.error.cantExecute.message");
-                final String resultMessage = errorMessage.replace("%path%", path.toString());
-                final String title = JmeMessagesBundle.message("jme.instance.error.cantExecute.title");
+                String errorMessage = JmeMessagesBundle.message("jme.instance.error.cantExecute.message");
+                String resultMessage = errorMessage.replace("%path%", path.toString());
+                String title = JmeMessagesBundle.message("jme.instance.error.cantExecute.title");
                 Messages.showWarningDialog(resultMessage, title);
             });
             return false;
@@ -144,14 +143,14 @@ public class JmePluginUtils {
         boolean finished = false;
         try {
             finished = process.waitFor(2, TimeUnit.SECONDS);
-        } catch (final InterruptedException e) {
+        } catch (InterruptedException e) {
             LOG.warn(e);
         }
 
         if (!finished) {
             SwingUtilities.invokeLater(() -> {
-                final String message = JmeMessagesBundle.message("jme.instance.error.doesNotSupport.messageByTimeout", path.toString());
-                final String title = JmeMessagesBundle.message("jme.instance.error.doesNotSupport.title");
+                String message = JmeMessagesBundle.message("jme.instance.error.doesNotSupport.messageByTimeout", path.toString());
+                String title = JmeMessagesBundle.message("jme.instance.error.doesNotSupport.title");
                 Messages.showWarningDialog(message, title);
             });
             process.destroy();
@@ -161,8 +160,8 @@ public class JmePluginUtils {
         final int code = process.exitValue();
         if (code != 100) {
             SwingUtilities.invokeLater(() -> {
-                final String message = JmeMessagesBundle.message("jme.instance.error.doesNotSupport.message", path.toString());
-                final String title = JmeMessagesBundle.message("jme.instance.error.doesNotSupport.title");
+                String message = JmeMessagesBundle.message("jme.instance.error.doesNotSupport.message", path.toString());
+                String title = JmeMessagesBundle.message("jme.instance.error.doesNotSupport.title");
                 Messages.showWarningDialog(message, title);
             });
             return false;

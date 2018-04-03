@@ -18,7 +18,7 @@ public class JmeMessagesBundle extends AbstractBundle {
     }
 
     /**
-     * Get the message by the key and the params.
+     * Gets a message by the key and the params.
      *
      * @param key    the message key.
      * @param params the params.
