@@ -17,6 +17,8 @@
     <!-- uncomment to enable plugin in all products
     -->
     <depends>org.jetbrains.plugins.gradle</depends>
+    <depends>com.intellij.modules.idea.community</depends>
+
     <resource-bundle>messages.jme</resource-bundle>
 
     <extensions defaultExtensionNs="org.jetbrains.plugins.gradle">
