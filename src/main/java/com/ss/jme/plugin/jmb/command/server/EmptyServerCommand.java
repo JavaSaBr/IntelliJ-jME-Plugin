@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
 public class EmptyServerCommand extends ServerCommand {
 
     @Override
-    protected void readImpl(@NotNull final ConnectionOwner owner, @NotNull final ByteBuffer buffer) {
+    protected void readImpl(@NotNull ConnectionOwner owner, @NotNull ByteBuffer buffer) {
 
     }
 }

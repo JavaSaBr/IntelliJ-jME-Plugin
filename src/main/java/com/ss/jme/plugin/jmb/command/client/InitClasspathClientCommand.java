@@ -28,13 +28,13 @@ public class InitClasspathClientCommand extends ClientCommand {
     @Nullable
     private final Path output;
 
-    public InitClasspathClientCommand(@Nullable final Path output, @NotNull final Array<Path> libraries) {
+    public InitClasspathClientCommand(@Nullable Path output, @NotNull Array<Path> libraries) {
         this.output = output;
         this.libraries = libraries;
     }
 
     @Override
-    protected void writeImpl(@NotNull final ByteBuffer buffer) {
+    protected void writeImpl(@NotNull ByteBuffer buffer) {
         super.writeImpl(buffer);
         writeInt(buffer, libraries.size());
         libraries.forEach(library -> writeString(buffer, library.toString()));

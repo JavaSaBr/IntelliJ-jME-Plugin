@@ -1,7 +1,8 @@
 package com.ss.jme.plugin.framework.support;
 
+import static com.ss.jme.plugin.util.JmePluginUtils.getOrCreateFile;
+import static com.ss.jme.plugin.util.JmePluginUtils.getOrCreateFolders;
 import com.intellij.framework.FrameworkTypeEx;
-import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.externalSystem.model.project.ProjectId;
 import com.intellij.openapi.module.Module;
@@ -41,26 +42,28 @@ public class JmbFrameworkSupportProvider extends GradleFrameworkSupportProvider 
     public JmbFrameworkSupportProvider() {
     }
 
-
     @Override
     public @NotNull FrameworkTypeEx getFrameworkType() {
         return new JmbFrameworkTypeEx("jMonkeyBuilder", this);
     }
 
     @Override
-    public void addSupport(@NotNull final ProjectId projectId, @NotNull final Module module,
-                           @NotNull final ModifiableRootModel rootModel,
-                           @NotNull final ModifiableModelsProvider modifiableModelsProvider,
-                           @NotNull final BuildScriptDataBuilder buildScriptData) {
+    public void addSupport(
+            @NotNull ProjectId projectId,
+            @NotNull Module module,
+            @NotNull ModifiableRootModel rootModel,
+            @NotNull ModifiableModelsProvider modifiableModelsProvider,
+            @NotNull BuildScriptDataBuilder buildScriptData
+    ) {
 
         buildScriptData
-
                 .addImport("import java.nio.file.Files")
                 .addImport("import java.nio.file.Paths")
 
                 .addRepositoriesDefinition("jcenter()")
                 .addRepositoriesDefinition("mavenCentral()")
-                .addRepositoriesDefinition("maven { url 'https://jitpack.io' }")
+                .addRepositoriesDefinition("maven { url \"https://jitpack.io\" }")
+                .addRepositoriesDefinition("maven { url \"https://dl.bintray.com/javasabr/maven\" }")
 
                 .addPluginDefinition("apply plugin: 'maven'")
                 .addPluginDefinition("apply plugin: 'java'")
@@ -68,13 +71,13 @@ public class JmbFrameworkSupportProvider extends GradleFrameworkSupportProvider 
 
                 .addPropertyDefinition("ext.artifactId = 'jmb-plugin-example'")
                 .addPropertyDefinition("mainClassName = \"com.ss.editor.DevelopPluginStarter\"")
-                .addPropertyDefinition("sourceCompatibility = 1.8")
-                .addPropertyDefinition("targetCompatibility = 1.8")
+                .addPropertyDefinition("sourceCompatibility = 1.10")
+                .addPropertyDefinition("targetCompatibility = 1.10")
                 .addPropertyDefinition("configurations {\n" +
                         "    pluginDependencies\n" +
                         "}")
 
-                .addDependencyNotation("compile 'com.github.JavaSaBr:jmonkeybuilder:develop-SNAPSHOT'")
+                .addDependencyNotation("compile 'com.spaceshift:jmonkeybuilder:1.7.3-Final'")
 
                 .addOther("task cleanPluginFolders(type: Delete) {\n" +
                         "    doFirst {\n" +
@@ -156,16 +159,19 @@ public class JmbFrameworkSupportProvider extends GradleFrameworkSupportProvider 
                         "    from pluginFolder.toString()\n" +
                         "    destinationDir deployPluginFolder.toFile()\n" +
                         "}")
-                .addOther("tasks.run.dependsOn('preparePlugin')")
                 .addOther("task wrapper(type: Wrapper) {\n" +
-                        "    gradleVersion = '4.5.1'\n" +
-                        "}");
+                        "    gradleVersion = '4.6'\n" +
+                        "}")
+                .addOther("run.dependsOn {\n" +
+                        "    preparePlugin\n" +
+                        "}\n" +
+                        "run.jvmArgs(Arrays.asList(\"-Xdebug\", \"-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005\"))");
 
-        final Project project = module.getProject();
-        final VirtualFile baseDir = project.getBaseDir();
+        Project project = module.getProject();
+        VirtualFile baseDir = project.getBaseDir();
 
-        final Application application = ApplicationManager.getApplication();
-        application.runWriteAction(() -> createAdditionalFiles(baseDir));
+        ApplicationManager.getApplication()
+                .runWriteAction(() -> createAdditionalFiles(baseDir));
     }
 
     /**
@@ -173,36 +179,34 @@ public class JmbFrameworkSupportProvider extends GradleFrameworkSupportProvider 
      *
      * @param baseDir the base dir of the project.
      */
-    private void createAdditionalFiles(@NotNull final VirtualFile baseDir) {
+    private void createAdditionalFiles(@NotNull VirtualFile baseDir) {
         try {
 
-            final VirtualFile mainDir = baseDir.createChildDirectory(this, "src")
-                    .createChildDirectory(this, "main");
+            VirtualFile mainDir = getOrCreateFolders(baseDir,this,"src", "main");
 
-            final VirtualFile java = mainDir.createChildDirectory(this, "java");
-            final VirtualFile resources = mainDir.createChildDirectory(this, "resources");
+            VirtualFile java = getOrCreateFolders(mainDir, this, "java");
+            VirtualFile resources = getOrCreateFolders(mainDir, this, "resources");
+            VirtualFile messagesFolder = getOrCreateFolders(resources, this,
+                    "plugin", "example", "messages");
 
-            final VirtualFile messagesFolder = resources.createChildDirectory(this, "plugin")
-                    .createChildDirectory(this, "example")
-                    .createChildDirectory(this, "messages");
-
-            final VirtualFile messagesFile = messagesFolder.createChildData(this, "messages.properties");
-
-            final VirtualFile rootSourceFolder = java.createChildDirectory(this, "com")
-                    .createChildDirectory(this, "ss")
-                    .createChildDirectory(this, "editor")
-                    .createChildDirectory(this, "plugin")
-                    .createChildDirectory(this, "example");
+            VirtualFile messagesFile = getOrCreateFile(messagesFolder, this,
+                    "messages.properties");
+            VirtualFile rootSourceFolder = getOrCreateFolders(java, this,
+                    "com", "ss", "editor", "plugin", "example");
 
             VfsUtil.saveText(messagesFile, MESSAGES);
 
-            final VirtualFile pluginClass = rootSourceFolder.createChildData(this, "ExamplePlugin.java");
+            VirtualFile pluginClass = getOrCreateFile(rootSourceFolder, this,
+                    "ExamplePlugin.java");
+
             VfsUtil.saveText(pluginClass, PLUGIN_CLASS);
 
-            final VirtualFile pluginMessagesClass = rootSourceFolder.createChildData(this, "PluginMessages.java");
+            VirtualFile pluginMessagesClass = getOrCreateFile(rootSourceFolder, this,
+                    "PluginMessages.java");
+
             VfsUtil.saveText(pluginMessagesClass, PLUGIN_MESSAGES_CLASS);
 
-        } catch (final IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }

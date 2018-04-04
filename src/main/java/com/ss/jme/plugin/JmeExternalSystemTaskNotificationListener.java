@@ -22,67 +22,67 @@ public class JmeExternalSystemTaskNotificationListener implements ExternalSystem
     @NotNull
     private final Module module;
 
-    public JmeExternalSystemTaskNotificationListener(@NotNull final Module module) {
+    public JmeExternalSystemTaskNotificationListener(@NotNull Module module) {
         this.module = module;
         ServiceManager.getService(ExternalSystemProgressNotificationManager.class)
                 .addNotificationListener(this);
     }
 
     @Override
-    public void onSuccess(@NotNull final ExternalSystemTaskId id) {
+    public void onSuccess(@NotNull ExternalSystemTaskId id) {
 
-        final ExternalSystemTaskType type = id.getType();
-        final ProjectSystemId projectSystemId = id.getProjectSystemId();
+        ExternalSystemTaskType type = id.getType();
+        ProjectSystemId projectSystemId = id.getProjectSystemId();
         if (type != ExternalSystemTaskType.RESOLVE_PROJECT || GradleConstants.SYSTEM_ID != projectSystemId) {
             return;
         }
 
-        final Project project = id.findProject();
-        final Project moduleProject = module.getProject();
+        Project project = id.findProject();
+        Project moduleProject = module.getProject();
         if (project != moduleProject) {
             return;
         }
 
-        final JmeModuleComponent moduleComponent = module.getComponent(JmeModuleComponent.class);
-        moduleComponent.onProjectResolved();
+        module.getComponent(JmeModuleComponent.class)
+                .onProjectResolved();
     }
 
     @Override
-    public void onFailure(@NotNull final ExternalSystemTaskId id, @NotNull final Exception e) {
-
-    }
-
-    @Override
-    public void beforeCancel(@NotNull final ExternalSystemTaskId id) {
+    public void onFailure(@NotNull ExternalSystemTaskId id, @NotNull Exception e) {
 
     }
 
     @Override
-    public void onCancel(@NotNull final ExternalSystemTaskId id) {
-
-    }
-    @Override
-    public void onQueued(@NotNull final ExternalSystemTaskId id, final String workingDir) {
+    public void beforeCancel(@NotNull ExternalSystemTaskId id) {
 
     }
 
     @Override
-    public void onStart(@NotNull final ExternalSystemTaskId id) {
+    public void onCancel(@NotNull ExternalSystemTaskId id) {
+
+    }
+    @Override
+    public void onQueued(@NotNull ExternalSystemTaskId id, String workingDir) {
 
     }
 
     @Override
-    public void onStatusChange(@NotNull final ExternalSystemTaskNotificationEvent event) {
+    public void onStart(@NotNull ExternalSystemTaskId id) {
 
     }
 
     @Override
-    public void onTaskOutput(@NotNull final ExternalSystemTaskId id, @NotNull final String text, final boolean stdOut) {
+    public void onStatusChange(@NotNull ExternalSystemTaskNotificationEvent event) {
 
     }
 
     @Override
-    public void onEnd(@NotNull final ExternalSystemTaskId id) {
+    public void onTaskOutput(@NotNull ExternalSystemTaskId id, @NotNull String text, boolean stdOut) {
+
+    }
+
+    @Override
+    public void onEnd(@NotNull ExternalSystemTaskId id) {
 
     }
 

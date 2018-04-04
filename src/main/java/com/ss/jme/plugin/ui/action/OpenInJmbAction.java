@@ -24,20 +24,20 @@ import java.nio.file.Paths;
 public class OpenInJmbAction extends AnAction {
 
     @Override
-    public void actionPerformed(@NotNull final AnActionEvent event) {
+    public void actionPerformed(@NotNull AnActionEvent event) {
 
-        final VirtualFile file = event.getData(PlatformDataKeys.VIRTUAL_FILE);
-        final Project project = event.getProject();
+        VirtualFile file = event.getData(PlatformDataKeys.VIRTUAL_FILE);
+        Project project = event.getProject();
         if (file == null || project == null) {
             return;
         }
 
-        final Path assetFolder = getAssetFolder(file, project);
+        Path assetFolder = getAssetFolder(file, project);
         if (assetFolder == null) {
             return;
         }
 
-        final Module module = ModuleUtil.findModuleForFile(file, project);
+        Module module = ModuleUtil.findModuleForFile(file, project);
         if (module == null) {
             return;
         }
@@ -47,22 +47,22 @@ public class OpenInJmbAction extends AnAction {
     }
 
     /**
-     * Get an asset folder of the filer.
+     * Gets an asset folder of the filer.
      *
      * @param file    the file.
      * @param project the project.
      * @return the asset folder or null.
      */
-    private @Nullable Path getAssetFolder(@NotNull final VirtualFile file, @NotNull final Project project) {
+    private @Nullable Path getAssetFolder(@NotNull VirtualFile file, @NotNull Project project) {
 
-        final Module module = ModuleUtil.findModuleForFile(file, project);
+        Module module = ModuleUtil.findModuleForFile(file, project);
         if (module == null) {
             return null;
         }
 
-        final JmeModuleComponent moduleComponent = module.getComponent(JmeModuleComponent.class);
-        final Path assetFolder = moduleComponent.getAssetFolder();
-        final Path fileAssetFolder = moduleComponent.getAssetFolder(file);
+        JmeModuleComponent moduleComponent = module.getComponent(JmeModuleComponent.class);
+        Path assetFolder = moduleComponent.getAssetFolder();
+        Path fileAssetFolder = moduleComponent.getAssetFolder(file);
 
         if (assetFolder == null || !assetFolder.equals(fileAssetFolder)) {
             return null;
@@ -72,12 +72,12 @@ public class OpenInJmbAction extends AnAction {
     }
 
     @Override
-    public void update(@NotNull final AnActionEvent event) {
+    public void update(@NotNull AnActionEvent event) {
 
-        final Presentation presentation = event.getPresentation();
+        Presentation presentation = event.getPresentation();
 
-        final VirtualFile file = event.getData(PlatformDataKeys.VIRTUAL_FILE);
-        final Project project = event.getProject();
+        VirtualFile file = event.getData(PlatformDataKeys.VIRTUAL_FILE);
+        Project project = event.getProject();
         if (file == null || project == null) {
             presentation.setEnabledAndVisible(false);
             return;

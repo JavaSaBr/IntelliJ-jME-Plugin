@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.ss.jme.plugin</id>
     <name>jMonkeyEngine Support</name>
-    <version>1.3.2</version>
+    <version>1.3.3</version>
     <vendor email="javasabr@gmail.com" url="https://github.com/JavaSaBr/IntelliJ-jME-Plugin">JavaSaBr</vendor>
 
     <description><![CDATA[
@@ -10,13 +10,15 @@
     ]]></description>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="173"/>
+    <idea-version since-build="181"/>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
     <!-- uncomment to enable plugin in all products
     -->
     <depends>org.jetbrains.plugins.gradle</depends>
+    <depends>com.intellij.modules.idea.community</depends>
+
     <resource-bundle>messages.jme</resource-bundle>
 
     <extensions defaultExtensionNs="org.jetbrains.plugins.gradle">
