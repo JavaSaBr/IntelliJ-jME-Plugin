@@ -4,8 +4,8 @@ import com.ss.editor.annotation.FromAnyThread;
 import com.ss.editor.plugin.EditorPlugin;
 import com.ss.editor.plugin.example.PluginMessages;
 import com.ss.editor.ui.component.asset.tree.AssetTreeContextMenuFillerRegistry;
-import com.ss.rlib.plugin.PluginContainer;
-import com.ss.rlib.plugin.annotation.PluginDescription;
+import com.ss.rlib.common.plugin.PluginContainer;
+import com.ss.rlib.common.plugin.annotation.PluginDescription;
 import javafx.scene.control.MenuItem;
 import org.jetbrains.annotations.NotNull;
 

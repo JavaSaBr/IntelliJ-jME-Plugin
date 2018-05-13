@@ -1,6 +1,6 @@
 package com.ss.jme.plugin.jmb.command.client;
 
-import com.ss.rlib.network.annotation.PacketDescription;
+import com.ss.rlib.common.network.annotation.PacketDescription;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.ByteBuffer;

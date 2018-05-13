@@ -10,10 +10,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author JavaSaBr
  */
-@State(name = "JmePluginComponent", storages = @Storage(
-        value = "JmePluginComponent",
-        file = StoragePathMacros.APP_CONFIG + "/jme.plugin.xml"
-))
+@State(name = "JmePluginComponent", storages = @Storage(value = "jme.plugin.xml"))
 public class JmePluginComponent implements ApplicationComponent, PersistentStateComponent<JmePluginState> {
 
     public static @NotNull JmePluginComponent getInstance() {
