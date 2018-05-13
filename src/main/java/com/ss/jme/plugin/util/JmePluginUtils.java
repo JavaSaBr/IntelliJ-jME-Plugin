@@ -6,9 +6,9 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.ss.jme.plugin.JmeMessagesBundle;
 import com.ss.jme.plugin.JmePluginComponent;
 import com.ss.jme.plugin.JmePluginState;
-import com.ss.rlib.util.FileUtils;
-import com.ss.rlib.util.StringUtils;
-import com.ss.rlib.util.Utils;
+import com.ss.rlib.common.util.FileUtils;
+import com.ss.rlib.common.util.StringUtils;
+import com.ss.rlib.common.util.Utils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +27,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class JmePluginUtils {
 
-    @NotNull
     private static final Logger LOG = Logger.getInstance("#com.ss.jme.plugin.util.JmePluginUtils");
 
     /**
@@ -39,9 +38,9 @@ public class JmePluginUtils {
      * @return the created folder.
      */
     public static @NotNull VirtualFile getOrCreateFolders(
-            @NotNull final VirtualFile parent,
-            @NotNull final Object requester,
-            @NotNull final String... names
+            @NotNull VirtualFile parent,
+            @NotNull Object requester,
+            @NotNull String... names
     ) {
 
         String name = names[0];

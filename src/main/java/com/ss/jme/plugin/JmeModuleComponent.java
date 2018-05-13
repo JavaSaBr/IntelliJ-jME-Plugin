@@ -11,8 +11,8 @@ import com.ss.jme.plugin.jmb.JmbInstance;
 import com.ss.jme.plugin.jmb.command.client.ClientCommand;
 import com.ss.jme.plugin.jmb.command.client.LoadLocalClassesClientCommand;
 import com.ss.jme.plugin.jmb.command.client.LoadLocalLibrariesClientCommand;
-import com.ss.rlib.util.array.Array;
-import com.ss.rlib.util.array.ArrayCollectors;
+import com.ss.rlib.common.util.array.Array;
+import com.ss.rlib.common.util.array.ArrayCollectors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

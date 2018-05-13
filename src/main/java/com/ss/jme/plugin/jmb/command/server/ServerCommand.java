@@ -1,6 +1,6 @@
 package com.ss.jme.plugin.jmb.command.server;
 
-import com.ss.rlib.network.packet.impl.AbstractReadablePacket;
+import com.ss.rlib.common.network.packet.impl.AbstractReadablePacket;
 
 /**
  * The base implementation of a server command.

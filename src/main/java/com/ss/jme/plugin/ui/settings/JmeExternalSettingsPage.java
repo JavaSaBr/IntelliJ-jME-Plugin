@@ -14,7 +14,7 @@ import com.ss.jme.plugin.JmeMessagesBundle;
 import com.ss.jme.plugin.JmePluginComponent;
 import com.ss.jme.plugin.JmePluginState;
 import com.ss.jme.plugin.util.JmePluginUtils;
-import com.ss.rlib.util.StringUtils;
+import com.ss.rlib.common.util.StringUtils;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

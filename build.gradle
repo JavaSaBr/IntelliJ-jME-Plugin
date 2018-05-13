@@ -15,7 +15,7 @@ intellij {
 }
 
 group 'com.ss.jme.plugin'
-version '1.3.3'
+version '1.3.4'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -29,10 +29,10 @@ repositories {
 }
 
 dependencies {
-    compile 'com.spaceshift:rlib:6.8.4-Final'
+    compile 'com.spaceshift:rlib.common:7.0.0'
     compileOnly 'org.projectlombok:lombok:1.16.20'
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '4.6'
+    gradleVersion = '4.7'
 }
