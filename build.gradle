@@ -9,7 +9,7 @@ apply plugin: 'java'
 apply plugin: "net.ltgt.apt"
 
 intellij {
-    version '2018.1'
+    version '2017.3'
     plugins = ['coverage', 'gradle']
     pluginName 'IntelliJ-jME-Plugin'
 }
