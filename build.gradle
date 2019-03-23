@@ -1,5 +1,5 @@
 plugins {
-    id "org.jetbrains.intellij" version "0.3.1"
+    id "org.jetbrains.intellij" version "0.3.12"
     id 'net.ltgt.apt' version '0.15'
 }
 
@@ -9,13 +9,13 @@ apply plugin: 'java'
 apply plugin: "net.ltgt.apt"
 
 intellij {
-    version '2018.1'
+    version '2018.3'
     plugins = ['coverage', 'gradle']
     pluginName 'IntelliJ-jME-Plugin'
 }
 
 group 'com.ss.jme.plugin'
-version '1.3.4'
+version '1.3.5'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
