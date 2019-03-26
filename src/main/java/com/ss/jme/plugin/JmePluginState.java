@@ -47,4 +47,7 @@ public class JmePluginState {
     public void setJmbPath(@Nullable String jmbPath) {
         this.jmbPath = jmbPath == null ? DEFAULT_JMB_PATH : jmbPath;
     }
+    public String getJmbPath() {
+        return this.jmbPath;
+    }
 }

@@ -51,6 +51,7 @@ public class JmbInstance extends Thread {
     @NotNull
     private static final ReadablePacketRegistry PACKET_REGISTRY = ReadablePacketRegistry.of(EmptyServerCommand.class);
 
+
     @NotNull
     private static final ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
 
@@ -154,6 +155,10 @@ public class JmbInstance extends Thread {
             ready = false;
             setServer(null);
         }
+    }
+
+    public void setServer(Server server) {
+        this.server = server;
     }
 
     /**
@@ -297,12 +302,25 @@ public class JmbInstance extends Thread {
         LOG.debug("jMB was started successfully.");
     }
 
+    private void setLastJmbPath(Path pathToJmb) {
+        lastJmbPath = pathToJmb;
+    }
+
+    private Server getServer() {
+        return server;
+    }
+
+    private Path getLastJmbPath() {
+        return lastJmbPath;
+    }
+
     /**
      * Gets the server of jMB.
      *
      * @return the server of jMB.
      */
-    private @NotNull Optional<Server> getServerOpt() {
+    private @NotNull
+    Optional<Server> getServerOpt() {
         return Optional.ofNullable(server);
     }
 
