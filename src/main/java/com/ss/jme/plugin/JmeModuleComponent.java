@@ -1,6 +1,5 @@
 package com.ss.jme.plugin;
 
-import static org.jetbrains.jps.model.java.JavaResourceRootType.RESOURCE;
 import com.intellij.compiler.server.BuildManagerListener;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleComponent;
@@ -21,6 +20,8 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
+
+import static org.jetbrains.jps.model.java.JavaResourceRootType.RESOURCE;
 
 /**
  * The module level component of jME Plugin.
@@ -105,10 +106,11 @@ public class JmeModuleComponent implements ModuleComponent, BuildManagerListener
      * @return the prepared library path
      */
     private @NotNull String prepareLibraryPath(@NotNull String path) {
+        final String substring = path.substring(0, path.length() - 2);
         if (path.endsWith("!/")) {
-            return path.substring(0, path.length() - 2);
+            return substring;
         } else if (path.endsWith("!\\")) {
-            return path.substring(0, path.length() - 2);
+            return substring;
         } else {
             return path;
         }
