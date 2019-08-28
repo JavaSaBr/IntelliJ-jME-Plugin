@@ -10,14 +10,15 @@
     ]]></description>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="181"/>
+    <idea-version since-build="191"/>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
     <!-- uncomment to enable plugin in all products
     -->
-    <depends>org.jetbrains.plugins.gradle</depends>
+    <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
+    <depends>org.jetbrains.plugins.gradle</depends>
 
     <resource-bundle>messages.jme</resource-bundle>
 
@@ -30,6 +31,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <applicationConfigurable id="com.ss.jme.settings.page"
                 instance="com.ss.jme.plugin.ui.settings.JmeExternalSettingsPage" groupId="language"/>
+        <applicationService serviceImplementation="com.ss.jme.plugin.JmePluginComponent"/>
     </extensions>
 
     <actions>
@@ -40,12 +42,6 @@
                     icon="/com/ss/jme/plugin/ui/icons/jmb.png" />
         </group>
     </actions>
-
-    <application-components>
-        <component>
-            <implementation-class>com.ss.jme.plugin.JmePluginComponent</implementation-class>
-        </component>
-    </application-components>
     <module-components>
         <component>
             <implementation-class>com.ss.jme.plugin.JmeModuleComponent</implementation-class>

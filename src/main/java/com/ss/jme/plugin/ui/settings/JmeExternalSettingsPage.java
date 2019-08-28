@@ -34,28 +34,33 @@ import java.util.Optional;
 public class JmeExternalSettingsPage implements Configurable, Configurable.NoScroll {
 
     /**
+     * The settings panel.
+     */
+    @Nullable
+    private JmeConfigurablePanel settingsPanel;
+
+    /**
+     * Constructor needs to be public to work with the EP
+     */
+    public JmeExternalSettingsPage() {
+    }
+
+    /**
      * Creates a file chooser descriptor to select an executable file of jMB.
      *
      * @return the file chooser descriptor.
      */
-    public static @NotNull FileChooserDescriptor createJmbDescriptor() {
+    public static @NotNull
+    FileChooserDescriptor createJmbDescriptor() {
         FileChooserDescriptor descriptor = FileChooserDescriptorFactory.createSingleFileDescriptor();
         descriptor.setTitle(JmeMessagesBundle.message("jme.settings.pathToJmb.file.chooser.title"));
         descriptor.setDescription(JmeMessagesBundle.message("jme.settings.pathToJmb.file.chooser.description"));
         return descriptor;
     }
 
-    /**
-     * The settings panel.
-     */
-    @Nullable
-    private JmeConfigurablePanel settingsPanel;
-
-    private JmeExternalSettingsPage() {
-    }
-
     @Override
-    public @Nullable JComponent createComponent() {
+    public @Nullable
+    JComponent createComponent() {
         settingsPanel = new JmeConfigurablePanel();
         return settingsPanel.panel;
     }
@@ -86,7 +91,8 @@ public class JmeExternalSettingsPage implements Configurable, Configurable.NoScr
      *
      * @return the settings panel.
      */
-    private @NotNull Optional<JmeConfigurablePanel> getSettingsPanel() {
+    private @NotNull
+    Optional<JmeConfigurablePanel> getSettingsPanel() {
         return Optional.ofNullable(settingsPanel);
     }
 

@@ -1,7 +1,9 @@
 package com.ss.jme.plugin;
 
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.components.*;
+import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.components.State;
+import com.intellij.openapi.components.Storage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,10 +13,10 @@ import org.jetbrains.annotations.Nullable;
  * @author JavaSaBr
  */
 @State(name = "JmePluginComponent", storages = @Storage(value = "jme.plugin.xml"))
-public class JmePluginComponent implements ApplicationComponent, PersistentStateComponent<JmePluginState> {
+public class JmePluginComponent implements PersistentStateComponent<JmePluginState> {
 
     public static @NotNull JmePluginComponent getInstance() {
-        return ApplicationManager.getApplication().getComponent(JmePluginComponent.class);
+        return ServiceManager.getService(JmePluginComponent.class);
     }
 
     @NotNull
@@ -22,14 +24,6 @@ public class JmePluginComponent implements ApplicationComponent, PersistentState
 
     public JmePluginComponent() {
         this.state = new JmePluginState();
-    }
-
-    @Override
-    public void initComponent() {
-    }
-
-    @Override
-    public void disposeComponent() {
     }
 
     @Override
